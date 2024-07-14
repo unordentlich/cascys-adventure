@@ -1,0 +1,15 @@
+{
+  "name": "cascys-adventure",
+  "version": "1.0.0",
+  "description": "An interactive game with the aim to teach CSS and web design",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jonas",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^31.2.0"
+  }
+}
