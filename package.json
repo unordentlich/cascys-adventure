@@ -10,6 +10,7 @@
   "author": "Jonas",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^31.2.0"
+    "electron": "^31.2.0",
+    "electron-reloader": "^1.2.3"
   }
 }
