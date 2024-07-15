@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="../../styles/general.css" rel="stylesheet">
+    <link href="../../styles/intro.css" rel="stylesheet">
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("last").addEventListener("animationend", () => {
+                window.electronAPI.leaveIntro();
+            });
+        })
+    </script>
+</head>
+
+<body>
+    <div id="titlebar">
+        <div></div>
+    </div>
+    <div class="body">
+        <div class="logo-container">
+            <img src="../../assets/logo.png">
+            <div>
+                <h1>Cascy's Coding Adventure</h1>
+                <p>An education game</p>
+            </div>
+        </div>
+        <div class="author-container" id="last">
+            <img src="../../assets/github.png">
+            <div>
+                <p>Created by</p>
+                <h1>@unordentlich</h1>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

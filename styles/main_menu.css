@@ -1,5 +1,9 @@
 body {
     height: 100vh;
+    background-color: #000;
+    opacity: 0;
+
+    animation: 4s bg forwards;
 }
 
 .body {
@@ -256,5 +260,16 @@ h5 {
 
     100% {
         top: -70px;
+    }
+}
+
+@keyframes bg {
+    80% {
+        background-color: #3e3b48;
+    }
+
+    100% {
+        background-color: #3e3b48;
+        opacity: 1;
     }
 }

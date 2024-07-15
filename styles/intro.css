@@ -1,0 +1,72 @@
+body {
+    background-color: #000;
+    width: 100%;
+}
+
+.logo-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+
+    animation: 8s fade-in forwards 2.5s;
+}
+
+.author-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    opacity: 0;
+
+    animation: 8s fade-in forwards 13.5s;
+}
+
+.logo-container img {
+    width: 200px;
+}
+
+.author-container img {
+    width: 100px;
+}
+
+h1 {
+    font-size: 60px;
+}
+
+p {
+    color: rgba(255, 255, 255, 0.624);
+    text-align: center;
+}
+
+p, h1 {
+    margin: 0;
+}
+
+@keyframes fade-in {
+    0% {
+        display: flex;
+        opacity: 0;
+    }
+    20%, 80% {
+        opacity: 1;
+    }
+    99% {
+        opacity: 0;
+    }
+    100% {
+        display: none;
+    }
+}
