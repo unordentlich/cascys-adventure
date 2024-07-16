@@ -1,5 +1,5 @@
-const height = 256;
-const width = 256;
+const height = 32;
+const width = 32;
 const pixelSize = 20;
 let canvas;
 let ctx;
@@ -7,51 +7,43 @@ let ctx;
 let offsetX = 0;
 let offsetY = 0;
 
-let isDragging = false;
-let dragStartX, dragStartY;
-
 document.addEventListener("DOMContentLoaded", () => {
     canvas = document.getElementById("map");
     ctx = canvas.getContext("2d");
     canvas.width = canvas.parentElement.getBoundingClientRect().width;
     canvas.height = canvas.parentElement.getBoundingClientRect().height;
     prepareCanvas();
+});
 
+const movementKeys = ['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'];
+document.addEventListener('keydown', (e) => {
+    console.log(e.key);
 
-    canvas.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        dragStartX = e.clientX - offsetX;
-        dragStartY = e.clientY - offsetY;
-    });
+    if(!movementKeys.includes(e.key)) return;
+    if(e.key === 'w' || e.key === 'ArrowUp') {
+        offsetY += 1;
+    } else if(e.key === 's' || e.key === 'ArrowDown') {
+        offsetY -= 1;
+    } else if(e.key === 'd' || e.key === 'ArrowRight') {
+        offsetX -= 1;
+    } else if(e.key === 'a' || e.key === 'ArrowLeft') {
+        offsetX += 1;
+    }
+    console.log(offsetX, offsetY);
 
-    canvas.addEventListener('mousemove', (e) => {
-        if (isDragging) {
-            offsetX = e.clientX - dragStartX;
-            offsetY = e.clientY - dragStartY;
-            prepareCanvas();
-        }
-    });
-
-    canvas.addEventListener('mouseup', () => {
-        isDragging = false;
-    });
-
-    canvas.addEventListener('mouseleave', () => {
-        isDragging = false;
-    });
-})
+    prepareCanvas();
+});
 
 function prepareCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();
-    ctx.translate(offsetX, offsetY);
 
-    let xPos = 0;
-    let yPos = 0;
+    let xPos = 0 + (offsetX * pixelSize);
+    let yPos = 0 + (offsetY * pixelSize);
 
     for (let i = 0; i < height * width; i++) {
-        if (xPos >= width * pixelSize) {
-            xPos = 0;
+        if (xPos >= width * pixelSize + offsetX * pixelSize) {
+            xPos = 0 + (offsetX * pixelSize);
             yPos += pixelSize;
         }
 
