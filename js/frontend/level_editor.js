@@ -1,6 +1,6 @@
-const height = 12;
-const width = 24;
-const pixelSize = 20;
+const height = 64;
+const width = 64;
+const pixelSize = 50;
 const previewScale = 8;
 let canvas;
 let ctx;
@@ -10,6 +10,7 @@ let offsetY = 0;
 
 let dragging = false;
 let mouseClicked = [];
+let lastClicked = [0, 0];
 let mouseOffsetX = 0;
 let mouseOffsetY = 0;
 
@@ -58,8 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     canvas.addEventListener("mousemove", (e) => {
         if(!dragging) return;
-        mouseOffsetX = e.clientX - mouseClicked[0];
-        mouseOffsetY = e.clientY - mouseClicked[1];
+        mouseOffsetX = lastClicked[0] + (e.clientX - mouseClicked[0]);
+        mouseOffsetY = lastClicked[1] + (e.clientY - mouseClicked[1]);
         console.log(mouseOffsetX, mouseOffsetY);
         prepareCanvas();
     });
@@ -67,6 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     canvas.addEventListener("mouseup", () => {
         if(!dragging) return;
         dragging = false;
+        lastClicked = [mouseOffsetX, mouseOffsetY];
     })
 });
 
@@ -90,7 +92,6 @@ document.addEventListener('keydown', (e) => {
 });
 
 function prepareCanvas() {
-    console.log(mouseOffsetX, mouseOffsetY);
     ctx.restore();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();
