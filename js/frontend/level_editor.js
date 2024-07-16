@@ -19,6 +19,10 @@ let zoomStep = 0.2;
 let maxZoom = 4.5;
 let minZoom = 0.5;
 
+window.addEventListener("resize", () => {
+    prepareCanvas();
+});
+
 document.addEventListener("DOMContentLoaded", () => {
     canvas = document.getElementById("map");
     ctx = canvas.getContext("2d");
