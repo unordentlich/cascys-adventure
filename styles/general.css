@@ -13,12 +13,13 @@ body {
 #titlebar {
     font-family: 'DPComic';
     height: 32px;
-    width: 90%; /* Otherwise windows buttons would overlap */
+    width: 100%; /* Otherwise windows buttons would overlap */
     -webkit-app-region: drag;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 10px;
+    box-sizing: border-box;
 }
 
 #titlebar img {

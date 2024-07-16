@@ -12,7 +12,7 @@ const showIntro = () => {
         title: GAME_NAME,
         titleBarStyle: 'hidden',
         titleBarOverlay: {
-            color: '#000',
+            color: 'rgba(0,0,0,0)',
             symbolColor: '#fff',
             height: 32
         },
@@ -29,7 +29,7 @@ function leaveIntro(event) {
     win.loadFile("views/main_menu.html");
     setTimeout(() => {
         win.setTitleBarOverlay({
-            color: '#3e3b48',
+            color: 'rgba(0,0,0,0)',
             symbolColor: '#fff',
             height: 32
         });
@@ -39,7 +39,7 @@ function leaveIntro(event) {
 function switchPage(event, destination, titlebarColor) {
     if(titlebarColor) {
         win.setTitleBarOverlay({
-            color: titlebarColor,
+            color: 'rgba(0,0,0,0)',
             symbolColor: '#fff',
             height: 32
         });

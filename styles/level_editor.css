@@ -60,5 +60,8 @@ input:focus {
 
 .flex-pane {
     flex: 1;
-    border: 1px solid green;
+}
+
+canvas {
+    display: block;
 }
