@@ -1,8 +1,12 @@
-const height = 32;
-const width = 32;
+const height = 12;
+const width = 24;
 const pixelSize = 20;
+const previewScale = 8;
 let canvas;
 let ctx;
+
+let previewBox, previewViewRect, previewMapRect;
+let previewPixelPerMove = 2;
 
 let offsetX = 0;
 let offsetY = 0;
@@ -10,8 +14,36 @@ let offsetY = 0;
 document.addEventListener("DOMContentLoaded", () => {
     canvas = document.getElementById("map");
     ctx = canvas.getContext("2d");
+
+    previewBox = document.getElementById("map-hud");
+    previewViewRect = document.getElementById("view-rect");
+    previewMapRect = document.getElementById("map-rect");
+
     canvas.width = canvas.parentElement.getBoundingClientRect().width;
     canvas.height = canvas.parentElement.getBoundingClientRect().height;
+
+    previewBox.style.width = canvas.width / previewScale + "px";
+    previewBox.style.height = canvas.height / previewScale + "px";
+
+    var prevHeight = (height / width) * height;
+    var prevWidth = (height / width) * width;
+    var toBeMultiplied = 0;
+    if(prevHeight > prevWidth) {
+        toBeMultiplied = (previewBox.getBoundingClientRect().height - 10) / prevHeight;
+    } else {
+        toBeMultiplied = (previewBox.getBoundingClientRect().width - 10) / prevWidth;
+    }
+    console.log(toBeMultiplied);
+    prevHeight = prevHeight * toBeMultiplied;
+    prevWidth = prevWidth * toBeMultiplied;
+
+    previewMapRect.style.width = prevWidth + "px";
+    previewMapRect.style.height = prevHeight + "px";
+
+    previewViewRect.style.width = canvas.width * pixelSize / canvas.getBoundingClientRect().width + "px";
+    previewViewRect.style.height = canvas.height * pixelSize / canvas.getBoundingClientRect().height + "px";
+    
+    console.log(previewPixelPerMove);
     prepareCanvas();
 });
 
@@ -53,6 +85,12 @@ function prepareCanvas() {
         ctx.stroke();
         xPos += pixelSize;
     }
+    //prepareCanvasPreview();
+}
+
+function prepareCanvasPreview() {
+    previewViewRect.style.top = (previewPixelPerMove * (-offsetY + 1)) + "px";
+    previewViewRect.style.left = (previewPixelPerMove * (-offsetX + 1)) + "px";
 }
 
 function getRandomColor() {

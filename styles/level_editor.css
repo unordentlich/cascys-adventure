@@ -52,6 +52,7 @@ input:focus {
 
 .flex-pane {
     width: 100%;
+    position: relative;
 }
 
 .flex-pane:first-of-type {
@@ -64,4 +65,36 @@ input:focus {
 
 canvas {
     display: block;
+}
+
+#map-hud {
+    position: absolute;
+    background-color: red;
+    width: 200px;
+    height: 100px;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index: 99;
+}
+
+#map-rect {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+}
+
+#view-rect {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
+    background-color: rgba(127, 255, 135, 0.331); 
 }
