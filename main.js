@@ -6,11 +6,9 @@ let win;
 
 const showIntro = () => {
     win = new BrowserWindow({
-        width: 800,
-        height: 900,
         minHeight: 700,
         minWidth: 1200,
-        icon: 'icon.png',
+        icon: 'assets/characters/cascy/default.png',
         title: GAME_NAME,
         titleBarStyle: 'hidden',
         titleBarOverlay: {
@@ -22,6 +20,7 @@ const showIntro = () => {
             preload: path.join(__dirname, 'preload.js')
         },
     });
+    win.maximize();
 
     win.loadFile("views/intro/logo.html");
 }
@@ -35,6 +34,17 @@ function leaveIntro(event) {
             height: 32
         });
     }, 2000)
+}
+
+function switchPage(event, destination, titlebarColor) {
+    if(titlebarColor) {
+        win.setTitleBarOverlay({
+            color: titlebarColor,
+            symbolColor: '#fff',
+            height: 32
+        });
+    }
+    win.loadFile(destination);
 }
 
 const createMainWindow = () => {
@@ -60,8 +70,9 @@ const createMainWindow = () => {
 
 app.whenReady().then(() => {
     showIntro();
-    //win.webContents.openDevTools();
+    win.webContents.openDevTools();
     ipcMain.on('leave-intro', leaveIntro);
+    ipcMain.on('switch-page', switchPage);
 });
 
 try {

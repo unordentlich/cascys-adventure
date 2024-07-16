@@ -1,0 +1,64 @@
+body {
+    background-color: rgb(26, 26, 26);
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#titlebar {
+    background-color: #101010;
+}
+
+.menu-bar {
+    padding: 15px 20px;
+    background-color: rgb(16, 16, 16);
+}
+
+.menu-bar h3 {
+    font-size: 15px;
+}
+
+input {
+    background-color: rgb(32, 32, 32);
+    padding: 5px;
+    font-weight: 520;
+    border-radius: 5px;
+    border: 2px solid rgb(43, 43, 43);
+    color: rgb(197, 197, 197);
+    transition: 100ms all;
+}
+
+input:focus {
+    outline: none;
+    filter: brightness(1.5);
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.flex {
+    flex: 1;
+}
+
+.flex-pane {
+    width: 100%;
+}
+
+.flex-pane:first-of-type {
+    flex: 2;
+}
+
+.flex-pane {
+    flex: 1;
+    border: 1px solid green;
+}

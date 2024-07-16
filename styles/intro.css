@@ -3,6 +3,10 @@ body {
     width: 100%;
 }
 
+* {
+    user-select: none;
+}
+
 .logo-container {
     position: absolute;
     top: 0;
