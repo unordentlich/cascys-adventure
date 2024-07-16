@@ -67,3 +67,17 @@ canvas {
     display: block;
     outline: 1px solid wheat;
 }
+
+canvas:hover {
+    animation: drag-me 2s infinite;
+}
+
+@keyframes drag-me {
+    0%, 100% {
+        cursor: grab;
+    }
+    
+    50% {
+        cursor: grabbing;
+    }
+}
