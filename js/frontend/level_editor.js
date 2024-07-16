@@ -5,48 +5,46 @@ const previewScale = 8;
 let canvas;
 let ctx;
 
-let previewBox, previewViewRect, previewMapRect;
-let previewPixelPerMove = 2;
-
 let offsetX = 0;
 let offsetY = 0;
+
+let zoom = 1;
+let zoomStep = 0.2;
+let maxZoom = 4.5;
+let minZoom = 0.5;
 
 document.addEventListener("DOMContentLoaded", () => {
     canvas = document.getElementById("map");
     ctx = canvas.getContext("2d");
 
-    previewBox = document.getElementById("map-hud");
-    previewViewRect = document.getElementById("view-rect");
-    previewMapRect = document.getElementById("map-rect");
-
     canvas.width = canvas.parentElement.getBoundingClientRect().width;
     canvas.height = canvas.parentElement.getBoundingClientRect().height;
 
-    previewBox.style.width = canvas.width / previewScale + "px";
-    previewBox.style.height = canvas.height / previewScale + "px";
-
-    var prevHeight = (height / width) * height;
-    var prevWidth = (height / width) * width;
-    var toBeMultiplied = 0;
-    if(prevHeight > prevWidth) {
-        toBeMultiplied = (previewBox.getBoundingClientRect().height - 10) / prevHeight;
-    } else {
-        toBeMultiplied = (previewBox.getBoundingClientRect().width - 10) / prevWidth;
-    }
-    prevHeight = prevHeight * toBeMultiplied;
-    prevWidth = prevWidth * toBeMultiplied;
-
-    previewMapRect.style.width = prevWidth + "px";
-    previewMapRect.style.height = prevHeight + "px";
-
-    previewViewRect.style.width = canvas.width * pixelSize / canvas.getBoundingClientRect().width + "px";
-    previewViewRect.style.height = canvas.height * pixelSize / canvas.getBoundingClientRect().height + "px";
-    previewViewRect.style.top = (previewMapRect.getBoundingClientRect().top + previewViewRect.getBoundingClientRect().height) + "px";
-
-    previewPixelPerMove = pixelSize / (canvas.getBoundingClientRect().width / previewBox.getBoundingClientRect().width);
-
-    console.log(previewPixelPerMove);
     prepareCanvas();
+
+    canvas.addEventListener("wheel", (e) => {
+        console.log(zoom);
+        if(e.wheelDelta) {
+            if(e.wheelDelta > 0) {
+                if(zoom >= maxZoom) return;
+                zoom += zoomStep;
+            } else {
+                if(zoom <= minZoom) return;
+                zoom -= zoomStep;
+            }
+            prepareCanvas();
+            return;
+        }
+
+        if(e.deltaY > 0) {
+            if(zoom >= maxZoom) return;
+            zoom += zoomStep;
+        } else {
+            if(zoom <= minZoom) return;
+            zoom -= zoomStep;
+        }
+        prepareCanvas();
+    })
 });
 
 const movementKeys = ['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'];
@@ -71,6 +69,8 @@ document.addEventListener('keydown', (e) => {
 function prepareCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();
+    ctx.resetTransform();
+    ctx.scale(zoom, zoom);
 
     let xPos = 0 + (offsetX * pixelSize);
     let yPos = 0 + (offsetY * pixelSize);
@@ -82,24 +82,8 @@ function prepareCanvas() {
         }
 
         ctx.beginPath();
-        ctx.fillStyle = getRandomColor();
-        ctx.fillRect(xPos, yPos, pixelSize, pixelSize);
+        ctx.rect(xPos, yPos, pixelSize, pixelSize);
         ctx.stroke();
         xPos += pixelSize;
     }
-    prepareCanvasPreview();
-}
-
-function prepareCanvasPreview() {
-    previewViewRect.style.top = (previewPixelPerMove * (-offsetY + 1)) + "px";
-    previewViewRect.style.left = (previewPixelPerMove * (-offsetX + 1)) + "px";
-}
-
-function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
 }
