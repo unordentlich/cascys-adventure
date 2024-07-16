@@ -11,10 +11,10 @@ let offsetY = 0;
 let dragging = false;
 let mouseClicked = [];
 let lastClicked = [0, 0];
-let mouseOffsetX = 0;
-let mouseOffsetY = 0;
+let mouseOffsetX = 50;
+let mouseOffsetY = 50;
 
-let zoom = 1;
+let zoom = 0.5;
 let zoomStep = 0.2;
 let maxZoom = 4.5;
 let minZoom = 0.5;
@@ -59,17 +59,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     canvas.addEventListener("mousemove", (e) => {
         if(!dragging) return;
-        mouseOffsetX = lastClicked[0] + (e.clientX - mouseClicked[0]);
-        mouseOffsetY = lastClicked[1] + (e.clientY - mouseClicked[1]);
+        mouseOffsetX = lastClicked[0] + (e.clientX - mouseClicked[0]) * (zoom <= minZoom ? 2 : 1);
+        mouseOffsetY = lastClicked[1] + (e.clientY - mouseClicked[1]) * (zoom <= minZoom ? 2 : 1);
         console.log(mouseOffsetX, mouseOffsetY);
         prepareCanvas();
     });
 
-    canvas.addEventListener("mouseup", () => {
+
+    const mouseUpOut = () => {
         if(!dragging) return;
         dragging = false;
         lastClicked = [mouseOffsetX, mouseOffsetY];
-    })
+    };
+    canvas.addEventListener("mouseup", mouseUpOut);
+    canvas.addEventListener("mouseout", mouseUpOut);
+
+    document.getElementById("center-btn").addEventListener("click", () => {
+        resetCanvasView();
+    });
 });
 
 const movementKeys = ['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'];
@@ -113,4 +120,12 @@ function prepareCanvas() {
         ctx.stroke();
         xPos += pixelSize;
     }
+}
+
+function resetCanvasView() {
+    mouseOffsetX = 50;
+    mouseOffsetY = 50;
+    lastClicked = [0, 0];
+
+    prepareCanvas();
 }

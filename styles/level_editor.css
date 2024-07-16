@@ -65,11 +65,32 @@ input:focus {
 
 canvas {
     display: block;
-    outline: 1px solid wheat;
+    border-right: 5px solid rgb(16, 16, 16);
 }
 
 canvas:hover {
     animation: drag-me 2s infinite;
+}
+
+.buttons {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 20px;
+}
+
+.buttons button {
+    background-color: rgb(249, 224, 96);
+    font-weight: 600;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: 500ms;
+}
+
+.buttons button:hover {
+    filter: brightness(1.2);
 }
 
 @keyframes drag-me {
