@@ -65,6 +65,7 @@ input:focus {
 
 canvas {
     display: block;
+    outline: 1px solid wheat;
 }
 
 #map-hud {
@@ -81,7 +82,6 @@ canvas {
 
 #map-rect {
     position: absolute;
-    margin: auto;
     top: 0;
     right: 0;
     bottom: 0;
@@ -96,5 +96,5 @@ canvas {
     bottom: 0;
     left: 0;
     z-index: 9999;
-    background-color: rgba(127, 255, 135, 0.331); 
+    background-color: rgba(4, 255, 20, 0.544); 
 }

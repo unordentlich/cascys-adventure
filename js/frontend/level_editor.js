@@ -33,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         toBeMultiplied = (previewBox.getBoundingClientRect().width - 10) / prevWidth;
     }
-    console.log(toBeMultiplied);
     prevHeight = prevHeight * toBeMultiplied;
     prevWidth = prevWidth * toBeMultiplied;
 
@@ -42,7 +41,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     previewViewRect.style.width = canvas.width * pixelSize / canvas.getBoundingClientRect().width + "px";
     previewViewRect.style.height = canvas.height * pixelSize / canvas.getBoundingClientRect().height + "px";
-    
+    previewViewRect.style.top = (previewMapRect.getBoundingClientRect().top + previewViewRect.getBoundingClientRect().height) + "px";
+
+    previewPixelPerMove = pixelSize / (canvas.getBoundingClientRect().width / previewBox.getBoundingClientRect().width);
+
     console.log(previewPixelPerMove);
     prepareCanvas();
 });
@@ -85,7 +87,7 @@ function prepareCanvas() {
         ctx.stroke();
         xPos += pixelSize;
     }
-    //prepareCanvasPreview();
+    prepareCanvasPreview();
 }
 
 function prepareCanvasPreview() {
