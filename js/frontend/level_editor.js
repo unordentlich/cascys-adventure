@@ -20,10 +20,20 @@ let maxZoom = 4.5;
 let minZoom = 0.5;
 
 window.addEventListener("resize", () => {
+    canvas.width = canvas.parentElement.getBoundingClientRect().width;
+    canvas.height = canvas.parentElement.getBoundingClientRect().height;
+
     prepareCanvas();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+    /** Debug Test */
+    window.electronAPI.requestAsset('/assets/sprites/map_basic.png').then((base64Image) => {
+        if(!base64Image) alert("Image not found!");
+        console.log(base64Image);
+    }).catch(err => console.error(err));
+    /** Debug Test */
+
     canvas = document.getElementById("map");
     ctx = canvas.getContext("2d");
 
@@ -34,23 +44,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     canvas.addEventListener("wheel", (e) => {
         console.log(zoom);
-        if(e.wheelDelta) {
-            if(e.wheelDelta > 0) {
-                if(zoom >= maxZoom) return;
+        if (e.wheelDelta) {
+            if (e.wheelDelta > 0) {
+                if (zoom >= maxZoom) return;
                 zoom += zoomStep;
             } else {
-                if(zoom <= minZoom) return;
+                if (zoom <= minZoom) return;
                 zoom -= zoomStep;
             }
             prepareCanvas();
             return;
         }
 
-        if(e.deltaY > 0) {
-            if(zoom >= maxZoom) return;
+        if (e.deltaY > 0) {
+            if (zoom >= maxZoom) return;
             zoom += zoomStep;
         } else {
-            if(zoom <= minZoom) return;
+            if (zoom <= minZoom) return;
             zoom -= zoomStep;
         }
         prepareCanvas();
@@ -62,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     canvas.addEventListener("mousemove", (e) => {
-        if(!dragging) return;
+        if (!dragging) return;
         mouseOffsetX = lastClicked[0] + (e.clientX - mouseClicked[0]) * (zoom <= minZoom ? 2 : 1);
         mouseOffsetY = lastClicked[1] + (e.clientY - mouseClicked[1]) * (zoom <= minZoom ? 2 : 1);
         console.log(mouseOffsetX, mouseOffsetY);
@@ -71,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     const mouseUpOut = () => {
-        if(!dragging) return;
+        if (!dragging) return;
         dragging = false;
         lastClicked = [mouseOffsetX, mouseOffsetY];
     };
@@ -87,14 +97,14 @@ const movementKeys = ['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', '
 document.addEventListener('keydown', (e) => {
     console.log(e.key);
 
-    if(!movementKeys.includes(e.key)) return;
-    if(e.key === 'w' || e.key === 'ArrowUp') {
+    if (!movementKeys.includes(e.key)) return;
+    if (e.key === 'w' || e.key === 'ArrowUp') {
         offsetY += 1;
-    } else if(e.key === 's' || e.key === 'ArrowDown') {
+    } else if (e.key === 's' || e.key === 'ArrowDown') {
         offsetY -= 1;
-    } else if(e.key === 'd' || e.key === 'ArrowRight') {
+    } else if (e.key === 'd' || e.key === 'ArrowRight') {
         offsetX -= 1;
-    } else if(e.key === 'a' || e.key === 'ArrowLeft') {
+    } else if (e.key === 'a' || e.key === 'ArrowLeft') {
         offsetX += 1;
     }
     console.log(offsetX, offsetY);
@@ -132,4 +142,17 @@ function resetCanvasView() {
     lastClicked = [0, 0];
 
     prepareCanvas();
+}
+
+function selectSprite(id, x, y) {
+    const pixelPerSlot = 512;
+    
+    //@todo pre-load images in map
+    return {
+        image: '',
+        swidth: pixelPerSlot,
+        sheight: pixelPerSlot,
+        sx: x*pixelPerSlot,
+        sy: y*pixelPerSlot,
+    }
 }

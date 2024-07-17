@@ -1,5 +1,6 @@
 const { BrowserWindow, app, ipcMain } = require("electron")
 const path = require('node:path')
+const fs = require('fs')
 
 const GAME_NAME = "Cascy's Coding Adventure"
 let win;
@@ -47,6 +48,13 @@ function switchPage(event, destination, titlebarColor) {
     win.loadFile(destination);
 }
 
+function requestAsset(event, p) {
+    const imagePath = path.join(__dirname, p);
+    const image = fs.readFileSync(imagePath);
+    const base64Image = image.toString('base64');
+    return `data:image/png;base64,${base64Image}`;
+}
+
 const createMainWindow = () => {
     win = new BrowserWindow({
         width: 800,
@@ -73,6 +81,7 @@ app.whenReady().then(() => {
     win.webContents.openDevTools();
     ipcMain.on('leave-intro', leaveIntro);
     ipcMain.on('switch-page', switchPage);
+    ipcMain.handle('request-asset', requestAsset);
 });
 
 try {

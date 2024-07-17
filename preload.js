@@ -2,5 +2,6 @@ const { contextBridge, ipcRenderer } = require('electron/renderer')
 
 contextBridge.exposeInMainWorld('electronAPI', {
   leaveIntro: () => ipcRenderer.send('leave-intro'),
-  switchPage: (destination, titlebarColor) => ipcRenderer.send('switch-page', destination, titlebarColor)
+  switchPage: (destination, titlebarColor) => ipcRenderer.send('switch-page', destination, titlebarColor),
+  requestAsset: (path) => ipcRenderer.invoke('request-asset', path)
 })
