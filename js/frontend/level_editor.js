@@ -1,6 +1,6 @@
-const height = 64;
-const width = 64;
-const pixelSize = 50;
+const height = 32;
+const width = 32;
+const pixelSize = 200;
 const previewScale = 8;
 let canvas;
 let ctx;
@@ -123,6 +123,7 @@ function prepareCanvas() {
     let xPos = 0 + (offsetX * pixelSize);
     let yPos = 0 + (offsetY * pixelSize);
 
+    var sprite = selectSprite("map_basic", 0, 2);
     for (let i = 0; i < height * width; i++) {
         if (xPos >= width * pixelSize + offsetX * pixelSize) {
             xPos = 0 + (offsetX * pixelSize);
@@ -131,7 +132,6 @@ function prepareCanvas() {
 
         ctx.beginPath();
 
-        var sprite = selectSprite("map_basic", 0, 2);
         ctx.drawImage(sprite.image, sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, pixelSize, pixelSize);
         ctx.stroke();
         xPos += pixelSize;
