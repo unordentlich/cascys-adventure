@@ -8,8 +8,10 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("btn-level-creator").addEventListener("click", () => {
-                console.log("pushed");
-                window.electronAPI.switchPage('views/level_editor.html', '#101010');
+                window.electronAPI.switchPage('views/level_editor.html');
+            });
+            document.getElementById("btn-settings").addEventListener("click" , () => {
+                window.electronAPI.switchPage('views/settings.html');
             });
         })
     </script>
@@ -96,7 +98,7 @@
                 </div>
             </div>
             <div style="margin-left: auto; display: flex;">
-                <button class="secondary-btn level-creator"><img src="../assets/icons/dredge.png">Settings</button>
+                <button class="secondary-btn level-creator" id="btn-settings"><img src="../assets/icons/dredge.png">Settings</button>
                 <button class="primary-btn level-creator" id="btn-level-creator"><img
                         src="../assets/icons/puzzle.png">Level Creator</button>
             </div>

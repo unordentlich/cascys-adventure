@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="../styles/general.css" rel="stylesheet">
+    <link href="../styles/settings.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="titlebar">
+        <div>
+            <img src="../assets/logo.png">
+            <p>Cascy's Coding Adventure</p>
+        </div>
+        <div>
+            <p id="title">Settings</p>
+        </div>
+        <div></div>
+    </div>
+    <div class="body">
+        <div class="container">
+            <ul class="navigation">
+                <li class="active">Performance</li>
+                <li>Audio</li>
+                <li>Other</li>
+            </ul>
+            <div class="setting-list" id="performance">
+                <div class="setting">
+                    <p class="key">Quality</p>
+                    <div class="range-slider-container">
+                        <input type="range" min="1" max="3" key="performance.quality">
+                        <div class="flex">
+                            <p>Low</p>
+                            <p>Medium</p>
+                            <p>High</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="setting">
+                    <p class="key">Animations</p>
+                    <div class="range-slider-container">
+                        <input type="range" min="1" max="3" key="performance.animations">
+                        <div class="flex">
+                            <p>Low</p>
+                            <p>Medium</p>
+                            <p>High</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
