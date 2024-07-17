@@ -19,6 +19,8 @@ let zoomStep = 0.2;
 let maxZoom = 4.5;
 let minZoom = 0.5;
 
+let images = new Map();
+
 window.addEventListener("resize", () => {
     canvas.width = canvas.parentElement.getBoundingClientRect().width;
     canvas.height = canvas.parentElement.getBoundingClientRect().height;
@@ -27,25 +29,32 @@ window.addEventListener("resize", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    /** Debug Test */
-    window.electronAPI.requestAsset('/assets/sprites/map_basic.png').then((base64Image) => {
-        if(!base64Image) alert("Image not found!");
-        console.log(base64Image);
-    }).catch(err => console.error(err));
-    /** Debug Test */
+    preloadImages();
 
-    canvas = document.getElementById("map");
-    ctx = canvas.getContext("2d");
+    setTimeout(() => {
+        canvas = document.getElementById("map");
+        ctx = canvas.getContext("2d");
 
-    canvas.width = canvas.parentElement.getBoundingClientRect().width;
-    canvas.height = canvas.parentElement.getBoundingClientRect().height;
+        canvas.width = canvas.parentElement.getBoundingClientRect().width;
+        canvas.height = canvas.parentElement.getBoundingClientRect().height;
 
-    prepareCanvas();
+        prepareCanvas();
 
-    canvas.addEventListener("wheel", (e) => {
-        console.log(zoom);
-        if (e.wheelDelta) {
-            if (e.wheelDelta > 0) {
+        canvas.addEventListener("wheel", (e) => {
+            console.log(zoom);
+            if (e.wheelDelta) {
+                if (e.wheelDelta > 0) {
+                    if (zoom >= maxZoom) return;
+                    zoom += zoomStep;
+                } else {
+                    if (zoom <= minZoom) return;
+                    zoom -= zoomStep;
+                }
+                prepareCanvas();
+                return;
+            }
+    
+            if (e.deltaY > 0) {
                 if (zoom >= maxZoom) return;
                 zoom += zoomStep;
             } else {
@@ -53,40 +62,31 @@ document.addEventListener("DOMContentLoaded", () => {
                 zoom -= zoomStep;
             }
             prepareCanvas();
-            return;
-        }
-
-        if (e.deltaY > 0) {
-            if (zoom >= maxZoom) return;
-            zoom += zoomStep;
-        } else {
-            if (zoom <= minZoom) return;
-            zoom -= zoomStep;
-        }
-        prepareCanvas();
-    });
-
-    canvas.addEventListener("mousedown", (e) => {
-        dragging = true;
-        mouseClicked = [e.clientX, e.clientY];
-    });
-
-    canvas.addEventListener("mousemove", (e) => {
-        if (!dragging) return;
-        mouseOffsetX = lastClicked[0] + (e.clientX - mouseClicked[0]) * (zoom <= minZoom ? 2 : 1);
-        mouseOffsetY = lastClicked[1] + (e.clientY - mouseClicked[1]) * (zoom <= minZoom ? 2 : 1);
-        console.log(mouseOffsetX, mouseOffsetY);
-        prepareCanvas();
-    });
-
-
-    const mouseUpOut = () => {
-        if (!dragging) return;
-        dragging = false;
-        lastClicked = [mouseOffsetX, mouseOffsetY];
-    };
-    canvas.addEventListener("mouseup", mouseUpOut);
-    canvas.addEventListener("mouseout", mouseUpOut);
+        });
+    
+        canvas.addEventListener("mousedown", (e) => {
+            dragging = true;
+            mouseClicked = [e.clientX, e.clientY];
+        });
+    
+        canvas.addEventListener("mousemove", (e) => {
+            if (!dragging) return;
+            mouseOffsetX = lastClicked[0] + (e.clientX - mouseClicked[0]) * (zoom <= minZoom ? 2 : 1);
+            mouseOffsetY = lastClicked[1] + (e.clientY - mouseClicked[1]) * (zoom <= minZoom ? 2 : 1);
+            console.log(mouseOffsetX, mouseOffsetY);
+            prepareCanvas();
+        });
+    
+    
+        const mouseUpOut = () => {
+            if (!dragging) return;
+            dragging = false;
+            lastClicked = [mouseOffsetX, mouseOffsetY];
+        };
+        canvas.addEventListener("mouseup", mouseUpOut);
+        canvas.addEventListener("mouseout", mouseUpOut);
+    
+    }, 1000);
 
     document.getElementById("center-btn").addEventListener("click", () => {
         resetCanvasView();
@@ -130,7 +130,9 @@ function prepareCanvas() {
         }
 
         ctx.beginPath();
-        ctx.rect(xPos, yPos, pixelSize, pixelSize);
+
+        var sprite = selectSprite("map_basic", 0, 2);
+        ctx.drawImage(sprite.image, sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, pixelSize, pixelSize);
         ctx.stroke();
         xPos += pixelSize;
     }
@@ -145,14 +147,28 @@ function resetCanvasView() {
 }
 
 function selectSprite(id, x, y) {
-    const pixelPerSlot = 512;
-    
-    //@todo pre-load images in map
+    const pixelPerSlot = 256;
+
     return {
-        image: '',
+        image: images.get(id),
         swidth: pixelPerSlot,
         sheight: pixelPerSlot,
-        sx: x*pixelPerSlot,
-        sy: y*pixelPerSlot,
+        sx: x * pixelPerSlot,
+        sy: y * pixelPerSlot,
     }
+}
+
+function preloadImages() {
+    const maps = ["map_basic"]
+    maps.forEach(map => {
+        window.electronAPI.requestAsset(`/assets/sprites/${map}.png`).then((base64Image) => {
+            if (!base64Image) alert("Image not found!");
+            console.log(base64Image);
+
+            var image = new Image();
+            image.src = base64Image;
+            images.set(map, image);
+        }).catch(err => console.error(err));
+    })
+
 }
