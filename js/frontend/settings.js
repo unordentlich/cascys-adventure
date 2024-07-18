@@ -1,4 +1,5 @@
 let settings;
+const githubRepoUrl = "https://api.github.com/unordentlich/cascys-adventure";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadSettings();
@@ -79,4 +80,22 @@ function switchTab(tab) {
 
     targetContainer.classList.add("active");
     targetNavigationElement.classList.add("active");
+}
+
+function loadGitHubStarCount() {
+    if (localStorage.getItem("github-request")) {
+        let info = JSON.parse(localStorage.getItem("github-request"));
+        if (info.lastFetch + 1800000 < Date.now()) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", githubRepoUrl, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var json = JSON.parse(xhr.responseText);
+                    //todo
+                }
+            };
+            xhr.send();
+        }
+    }
 }
