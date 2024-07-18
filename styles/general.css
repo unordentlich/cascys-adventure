@@ -42,6 +42,30 @@ body {
     display: flex;
 }
 
+#btn-exit {
+    cursor: pointer;
+}
+
+#btn-exit:hover {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+}
+
+#btn-exit img {
+    height: 25px;
+}
+
+#btn-exit {
+    flex: none;
+    align-items: center;
+    width: fit-content;
+}
+
+#btn-exit.flex p {
+    font-family: 'DPComic';
+    font-size: 16px;
+}
+
 @keyframes fadeIn {
     0% {
         opacity: 0;

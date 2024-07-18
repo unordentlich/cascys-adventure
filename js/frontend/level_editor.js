@@ -91,6 +91,11 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("center-btn").addEventListener("click", () => {
         resetCanvasView();
     });
+    document.getElementById("btn-exit").addEventListener("click", () => {
+        const confirmation = confirm('You are about to leave the Level Editor! Are you sure about it?');
+        if(!confirmation) return;
+        window.electronAPI.switchPage('views/main_menu.html');
+    });
 });
 
 const movementKeys = ['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'];
