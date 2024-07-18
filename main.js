@@ -44,14 +44,7 @@ function leaveIntro(event) {
     }, 2000)
 }
 
-function switchPage(event, destination, titlebarColor) {
-    if (titlebarColor) {
-        win.setTitleBarOverlay({
-            color: 'rgba(0,0,0,0)',
-            symbolColor: '#fff',
-            height: 32
-        });
-    }
+function switchPage(event, destination) {
     win.loadFile(destination);
 }
 

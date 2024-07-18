@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.getElementById("star-amount").innerText = loadGitHubStarCount();
+    document.getElementById("btn-exit").addEventListener("click", () => {window.electronAPI.switchPage('views/main_menu.html');});
 })
 
 function getSetting(key) {
