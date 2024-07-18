@@ -23,7 +23,8 @@ const showIntro = () => {
     });
     win.maximize();
 
-    win.loadFile("views/intro/logo.html");
+    //win.loadFile("views/intro/logo.html"); DEACTIVATED FOR DEBUG ONLY
+    win.loadFile("views/main_menu.html");
 }
 
 function leaveIntro(event) {
@@ -55,25 +56,15 @@ function requestAsset(event, p) {
     return `data:image/png;base64,${base64Image}`;
 }
 
-const createMainWindow = () => {
-    win = new BrowserWindow({
-        width: 800,
-        height: 900,
-        minHeight: 700,
-        minWidth: 1200,
-        icon: 'icon.png',
-        title: GAME_NAME,
-        titleBarStyle: 'hidden',
-        titleBarOverlay: {
-            color: '#3e3b48',
-            symbolColor: '#fff',
-            height: 32
-        },
-    });
+async function loadFile(event, p) {
+    const filePath = path.join(app.getPath('userData'), p);
+    let file = await fs.promises.readFile(filePath, 'utf-8');
+    return file;
+}
 
-    win.removeMenu();
-
-    win.loadFile("views/main_menu.html")
+function saveFile(event, p, file) {
+    const filePath = path.join(app.getPath('userData'), p);
+    fs.writeFileSync(filePath, file);
 }
 
 app.whenReady().then(() => {
@@ -82,6 +73,8 @@ app.whenReady().then(() => {
     ipcMain.on('leave-intro', leaveIntro);
     ipcMain.on('switch-page', switchPage);
     ipcMain.handle('request-asset', requestAsset);
+    ipcMain.handle('load-file', loadFile);
+    ipcMain.on('save-file', saveFile);
 });
 
 try {
