@@ -24,6 +24,10 @@ const showIntro = () => {
         },
     });
     win.maximize();
+    win.webContents.setWindowOpenHandler((edata) => {
+        require("electron").shell.openExternal(edata.url);
+        return { action: "deny" };
+    });
 
     //win.loadFile("views/intro/logo.html"); DEACTIVATED FOR DEBUG ONLY
     win.loadFile("views/main_menu.html");
@@ -41,7 +45,7 @@ function leaveIntro(event) {
 }
 
 function switchPage(event, destination, titlebarColor) {
-    if(titlebarColor) {
+    if (titlebarColor) {
         win.setTitleBarOverlay({
             color: 'rgba(0,0,0,0)',
             symbolColor: '#fff',
@@ -59,14 +63,14 @@ function requestAsset(event, p) {
 }
 
 async function loadFile(event, p) {
-    if(cachedFiles.has(p)) return cachedFiles.get(p);
+    if (cachedFiles.has(p)) return cachedFiles.get(p);
     const filePath = path.join(app.getPath('userData'), p);
     let file = await fs.promises.readFile(filePath, 'utf-8');
     return file;
 }
 
 function saveFile(event, p, file) {
-    if(cachedFiles.has(p)) cachedFiles.set(p, file);
+    if (cachedFiles.has(p)) cachedFiles.set(p, file);
     const filePath = path.join(app.getPath('userData'), p);
     fs.writeFileSync(filePath, file);
 }
@@ -74,7 +78,7 @@ function saveFile(event, p, file) {
 function preCacheFiles() {
     filesRequireCaching.forEach(item => {
         let file = loadFile(null, item);
-        if(!file) return;
+        if (!file) return;
 
         cachedFiles.set(item, file);
     });

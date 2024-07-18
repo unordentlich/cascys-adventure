@@ -1,9 +1,10 @@
 let settings;
-const githubRepoUrl = "https://api.github.com/unordentlich/cascys-adventure";
+const githubRepoUrl = "https://api.github.com/repos/unordentlich/cascys-adventure";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadSettings();
     switchTab('performance');
+
     let inputs = document.querySelectorAll("input[key]");
     for (let i = 0; i < inputs.length; i++) {
         let element = inputs[i];
@@ -14,6 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Setting %s has changed to %s", element.getAttribute("key"), element.value);
         });
     }
+
+    document.getElementById("star-amount").innerText = loadGitHubStarCount();
 })
 
 function getSetting(key) {
@@ -85,17 +88,23 @@ function switchTab(tab) {
 function loadGitHubStarCount() {
     if (localStorage.getItem("github-request")) {
         let info = JSON.parse(localStorage.getItem("github-request"));
-        if (info.lastFetch + 1800000 < Date.now()) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", githubRepoUrl, true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var json = JSON.parse(xhr.responseText);
-                    //todo
-                }
-            };
-            xhr.send();
-        }
+        if (info.lastFetch + 1800000 > Date.now()) return info.stars;
     }
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", githubRepoUrl, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var json = JSON.parse(xhr.responseText);
+            if (json["stargazers_count"]) {
+                localStorage.setItem("github-request", JSON.stringify({
+                    lastFetch: Date.now(),
+                    stars: json["stargazers_count"]
+                }));
+                return json["stargazers_count"];
+            }
+        }
+    };
+    xhr.send();
+    return 0;
 }
