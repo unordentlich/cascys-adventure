@@ -21,11 +21,17 @@
     </div>
     <div class="body">
         <div class="container">
-            <ul class="navigation">
-                <li class="active">Performance</li>
-                <li>Audio</li>
-                <li>Other</li>
-            </ul>
+            <div class="head">
+                <ul class="navigation">
+                    <li onclick="switchTab('performance')" key="performance">Performance</li>
+                    <li onclick="switchTab('audio')" key="audio">Audio</li>
+                    <li onclick="switchTab('other')" key="other">Other</li>
+                </ul>
+                <div class="flex">
+                    <img src="../assets/icons/leave.png">
+                    <p>Exit</p>
+                </div>
+            </div>
             <div class="setting-list" id="performance">
                 <div class="setting">
                     <p class="key">Quality</p>
@@ -49,6 +55,52 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="setting-list" id="audio">
+                <div class="setting">
+                    <p class="key">Master</p>
+                    <div class="range-slider-container">
+                        <input type="range" min="0" max="100" key="audio.master">
+                        <div class="flex">
+                            <p>0%</p>
+                            <p>100%</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="setting">
+                    <p class="key">Music</p>
+                    <div class="range-slider-container">
+                        <input type="range" min="0" max="100" key="audio.music">
+                        <div class="flex">
+                            <p>0%</p>
+                            <p>100%</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="setting">
+                    <p class="key">Menu Music</p>
+                    <div class="range-slider-container">
+                        <input type="range" min="0" max="100" key="audio.menu">
+                        <div class="flex">
+                            <p>0%</p>
+                            <p>100%</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="setting">
+                    <p class="key">Sound Effects</p>
+                    <div class="range-slider-container">
+                        <input type="range" min="0" max="100" key="audio.fx">
+                        <div class="flex">
+                            <p>0%</p>
+                            <p>100%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting-list" id="other">
+                <p>&copy; 2024 unordentlich</p>
+                <p class="sub">This game is intended for private use. Commercial publication, especially unsolicited by third parties, is <b>NOT</b> intended and <b>NOT</b> permitted.</p>
             </div>
         </div>
     </div>

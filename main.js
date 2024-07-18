@@ -2,7 +2,9 @@ const { BrowserWindow, app, ipcMain } = require("electron")
 const path = require('node:path')
 const fs = require('fs')
 
-const GAME_NAME = "Cascy's Coding Adventure"
+const GAME_NAME = "Cascy's Coding Adventure";
+const filesRequireCaching = ['settings.json'];
+const cachedFiles = new Map();
 let win;
 
 const showIntro = () => {
@@ -57,18 +59,30 @@ function requestAsset(event, p) {
 }
 
 async function loadFile(event, p) {
+    if(cachedFiles.has(p)) return cachedFiles.get(p);
     const filePath = path.join(app.getPath('userData'), p);
     let file = await fs.promises.readFile(filePath, 'utf-8');
     return file;
 }
 
 function saveFile(event, p, file) {
+    if(cachedFiles.has(p)) cachedFiles.set(p, file);
     const filePath = path.join(app.getPath('userData'), p);
     fs.writeFileSync(filePath, file);
 }
 
+function preCacheFiles() {
+    filesRequireCaching.forEach(item => {
+        let file = loadFile(null, item);
+        if(!file) return;
+
+        cachedFiles.set(item, file);
+    });
+}
+
 app.whenReady().then(() => {
     showIntro();
+    preCacheFiles();
     win.webContents.openDevTools();
     ipcMain.on('leave-intro', leaveIntro);
     ipcMain.on('switch-page', switchPage);
