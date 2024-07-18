@@ -1,13 +1,19 @@
 const { BrowserWindow, app, ipcMain } = require("electron")
 const path = require('node:path')
-const fs = require('fs')
+const fs = require('fs');
+const { getSetting } = require("./js/logic/settingManager.js");
 
 const GAME_NAME = "Cascy's Coding Adventure";
 const filesRequireCaching = ['settings.json'];
 const cachedFiles = new Map();
 let win;
 
-const showIntro = () => {
+const showIntro = async () => {
+    var fullscreenSetting = 1;
+    if (cachedFiles.has('settings.json'))
+        await cachedFiles.get('settings.json').then((file) => {
+            fullscreenSetting = getSetting(file, 'performance.window_mode', 3);
+        })
     win = new BrowserWindow({
         minHeight: 700,
         minWidth: 1200,
@@ -22,6 +28,7 @@ const showIntro = () => {
         webPreferences: {
             preload: path.join(__dirname, 'preload.js')
         },
+        fullscreen: (fullscreenSetting === '2')
     });
     win.maximize();
     win.webContents.setWindowOpenHandler((edata) => {
@@ -68,19 +75,23 @@ function saveFile(event, p, file) {
     fs.writeFileSync(filePath, file);
 }
 
-function preCacheFiles() {
-    filesRequireCaching.forEach(item => {
-        let file = loadFile(null, item);
-        if (!file) return;
+async function preCacheFiles() {
+    return new Promise((resolve, reject) => {
+        filesRequireCaching.forEach(item => {
+            let file = loadFile(null, item);
+            if (!file) return;
 
-        cachedFiles.set(item, file);
+            cachedFiles.set(item, file);
+        });
+        resolve();
     });
 }
 
-app.whenReady().then(() => {
-    showIntro();
-    preCacheFiles();
-    win.webContents.openDevTools();
+app.whenReady().then(async () => {
+    await preCacheFiles().then(async () => {
+        await showIntro();
+        win.webContents.openDevTools();
+    });
     ipcMain.on('leave-intro', leaveIntro);
     ipcMain.on('switch-page', switchPage);
     ipcMain.handle('request-asset', requestAsset);
