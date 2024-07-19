@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadSettings();
     switchTab('performance');
 
-    let inputs = document.querySelectorAll("input[key]");
+    let inputs = document.querySelectorAll("input[key], select[key]");
     for (let i = 0; i < inputs.length; i++) {
         let element = inputs[i];
 
@@ -61,7 +61,7 @@ function loadSettings() {
             settings = {};
         }
 
-        const inputList = document.querySelectorAll("input[key]");
+        const inputList = document.querySelectorAll("input[key], select[key]");
         for (let i = 0; i < inputList.length; i++) {
             const element = inputList[i];
             if (!element.hasAttribute("key")) return;

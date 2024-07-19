@@ -120,8 +120,11 @@ input[type="range"] {
     border-radius: 100px;
     background: #54505f;
     outline: none;
-    padding: 0 10px;
     box-sizing: border-box;
+}
+
+#performance input[type="range"] {
+    padding: 0 10px;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
@@ -146,6 +149,21 @@ input[type="range"]::-moz-range-thumb {
     height: 15px;
     background: rgb(230, 199, 0);
     cursor: pointer;
+}
+
+select {
+    background: #54505f;
+    color: rgb(230, 199, 0);
+    font-family: 'DPComic';
+    padding: 10px;
+    border-radius: 3px;
+    border: 2px solid #5f5b6a;
+    outline: 5px solid #5f5b6a00;
+    transition: outline 200ms;
+}
+
+select:focus {
+    outline: 5px solid #5f5b6a5b;
 }
 
 .head {
