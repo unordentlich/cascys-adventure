@@ -126,8 +126,7 @@ h5 {
     z-index: -1;
 
     /* style preps */
-    top: -70px;
-    right: 10px;
+    left: 10px;
     rotate: 3deg;
 
     animation: 40s cascy-sneak infinite;
@@ -171,7 +170,7 @@ h5 {
     margin-top: 20px;
 }
 
-.primary-btn:hover, .secondary-btn:hover {
+.primary-btn:hover, .secondary-btn:hover, .danger-btn:hover {
     filter: brightness(1.2);
 }
 
@@ -226,15 +225,15 @@ h5 {
 
 @keyframes cascy-sneak{
     0% {
-        top: -70px;
+        top: -10px;
     }
     
     19% {
-        top: -70px;
+        top: -10px;
     }
 
     20% {
-        top: -80px;
+        top: -20px;
     }
 
     21% {
@@ -246,20 +245,20 @@ h5 {
     }
 
     31% {
-        top: 10px;
+        top: 50px;
     }
 
     35% {
         rotate: 3deg;
-        top: 10px;
+        top: 50px;
     }
 
     40% {
-        top: -70px;
+        top: -10px;
     }
 
     100% {
-        top: -70px;
+        top: -10px;
     }
 }
 

@@ -66,6 +66,21 @@ body {
     font-size: 16px;
 }
 
+.danger-btn {
+    border-radius: 5px;
+    padding: 8px 20px;
+    outline: none;
+    background-color: rgb(210, 91, 91);
+    border: 3px solid rgb(227, 118, 118);
+    color: white;
+    font-family: 'DPComic';
+    font-weight: 500;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
 @keyframes fadeIn {
     0% {
         opacity: 0;
