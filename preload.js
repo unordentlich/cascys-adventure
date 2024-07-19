@@ -6,5 +6,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   requestAsset: (path) => ipcRenderer.invoke('request-asset', path),
   loadFile: (path) => ipcRenderer.invoke('load-file', path),
   saveFile: (path, file) => ipcRenderer.send('save-file', path, file),
-  toggleFullscreen: (mode) => ipcRenderer.send('toggle-fullscreen', mode)
+  toggleFullscreen: (mode) => ipcRenderer.send('toggle-fullscreen', mode),
+  getInformation: () => ipcRenderer.invoke('information'),
 })

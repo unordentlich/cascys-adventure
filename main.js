@@ -43,6 +43,11 @@ const showIntro = async () => {
     ipcMain.on('toggle-fullscreen', (event, mode) => {
         win.setFullScreen(mode);
     });
+    ipcMain.handle('information', (event) => {
+        return {
+            fullscreen: win.fullScreen,
+        }
+    });
 }
 
 function leaveIntro(event) {

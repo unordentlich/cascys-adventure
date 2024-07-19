@@ -119,8 +119,10 @@ function liveUpdate(key, newValue) {
         case 'performance.window_mode':
             if(newValue === '2') {
                 window.electronAPI.toggleFullscreen(true);
+                document.getElementById('titlebar').style.display = 'none';
             } else if(newValue === '1') {
                 window.electronAPI.toggleFullscreen(false);
+                document.getElementById('titlebar').style.display = 'flex';
             }
         break;
     }
