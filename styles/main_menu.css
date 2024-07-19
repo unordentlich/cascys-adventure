@@ -170,7 +170,9 @@ h5 {
     margin-top: 20px;
 }
 
-.primary-btn:hover, .secondary-btn:hover, .danger-btn:hover {
+.primary-btn:hover,
+.secondary-btn:hover,
+.danger-btn:hover {
     filter: brightness(1.2);
 }
 
@@ -195,6 +197,54 @@ h5 {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #5b586a;
+}
+
+#leave-confirmation-popup {
+    display: none;
+    position: absolute;
+    top: 70px;
+    right: 0;
+    z-index: 100;
+    background-color: rgba(35, 35, 35, 0.8);
+    border-radius: 10px;
+    padding: 20px;
+    -webkit-box-shadow: 0px 0px 20px -3px #000000;
+    box-shadow: 0px 0px 20px -3px #000000;
+    backdrop-filter: blur(20px);
+    animation: 500ms fadeIn forwards;
+}
+
+#leave-confirmation-popup button {
+    border-radius: 5px;
+    padding: 8px 20px;
+    outline: none;
+    background-color: rgb(52, 52, 52);
+    border: 3px solid rgb(67, 67, 67);
+    color: white;
+    font-family: 'DPComic';
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+#leave-confirmation-popup .confirm-btn {
+    background-color: rgb(210, 91, 91);
+    border: 3px solid rgb(227, 118, 118);
+}
+
+#leave-confirmation-popup .confirm-btn:hover {
+    filter: brightness(1.2);
+}
+
+
+#leave-confirmation-popup img {
+    height: 100px;
+}
+
+#leave-confirmation-popup p {
+    margin-top: 2px;
+    color: rgba(255, 255, 255, 0.667);
 }
 
 @keyframes shake {
@@ -223,11 +273,11 @@ h5 {
     }
 }
 
-@keyframes cascy-sneak{
+@keyframes cascy-sneak {
     0% {
         top: -10px;
     }
-    
+
     19% {
         top: -10px;
     }

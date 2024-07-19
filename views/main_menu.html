@@ -10,10 +10,20 @@
             document.getElementById("btn-level-creator").addEventListener("click", () => {
                 window.electronAPI.switchPage('views/level_editor.html');
             });
-            document.getElementById("btn-settings").addEventListener("click" , () => {
+            document.getElementById("btn-settings").addEventListener("click", () => {
                 window.electronAPI.switchPage('views/settings.html');
             });
-        })
+            document.getElementById("btn-leave").addEventListener("click", () => {
+                document.getElementById("leave-confirmation-popup").style.display = 'block';
+            });
+            document.getElementById('btn-leave-popup-confirm').addEventListener("click", () => {
+                //Maybe a more professional solution in the future required (with final save & shutdown logic)
+                window.close();
+            });
+            document.getElementById('btn-leave-popup-cancel').addEventListener("click", () => {
+                document.getElementById("leave-confirmation-popup").style.display = 'none';
+            });
+        });
     </script>
 </head>
 
@@ -39,8 +49,18 @@
             <div style="margin-left: auto; margin-bottom: 10px; display: flex;">
                 <button class="primary-btn level-creator" id="btn-level-creator"><img
                         src="../assets/icons/puzzle.png">Level Creator</button>
-                <button class="secondary-btn level-creator" id="btn-settings"><img src="../assets/icons/dredge.png">Settings</button>
-                <button class="danger-btn level-creator" id="btn-leave"><img src="../assets/icons/leave.png">Exit</button>
+                <button class="secondary-btn level-creator" id="btn-settings"><img
+                        src="../assets/icons/dredge.png">Settings</button>
+                <button class="danger-btn level-creator" id="btn-leave"><img
+                        src="../assets/icons/leave.png">Exit</button>
+                <div id="leave-confirmation-popup">
+                    <h5>Are you sure?</h5>
+                    <p>You are about to leave! Cascy would be very upset..</p>
+                    <div class="flex" style="gap: 5px; justify-content: flex-end;">
+                        <button class="cancel-btn" id="btn-leave-popup-cancel">No</button>
+                        <button class="confirm-btn" id="btn-leave-popup-confirm">Yes</button>
+                    </div>
+                </div>
             </div>
             <div class="level-selection-carousel">
                 <div class="level-container">
