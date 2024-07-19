@@ -12,6 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!element.hasAttribute("key")) return;
         element.addEventListener("change", () => {
             saveSetting(element.getAttribute("key"), element.value);
+
+            if(element.hasAttribute("liveUpdate")) {
+                liveUpdate(element.getAttribute("key"), element.value);
+            }
             console.log("Setting %s has changed to %s", element.getAttribute("key"), element.value);
         });
     }
@@ -108,4 +112,16 @@ function loadGitHubStarCount() {
     };
     xhr.send();
     return 0;
+}
+
+function liveUpdate(key, newValue) {
+    switch(key) {
+        case 'performance.window_mode':
+            if(newValue === '2') {
+                window.electronAPI.toggleFullscreen(true);
+            } else if(newValue === '1') {
+                window.electronAPI.toggleFullscreen(false);
+            }
+        break;
+    }
 }

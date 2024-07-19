@@ -26,7 +26,8 @@ const showIntro = async () => {
             height: 32
         },
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js')
+            preload: path.join(__dirname, 'preload.js'),
+            enableRemoteModule: true
         },
         fullscreen: (fullscreenSetting === '2')
     });
@@ -38,6 +39,10 @@ const showIntro = async () => {
 
     //win.loadFile("views/intro/logo.html"); DEACTIVATED FOR DEBUG ONLY
     win.loadFile("views/main_menu.html");
+
+    ipcMain.on('toggle-fullscreen', (event, mode) => {
+        win.setFullScreen(mode);
+    });
 }
 
 function leaveIntro(event) {
