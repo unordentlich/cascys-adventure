@@ -1,3 +1,5 @@
+const { prepareI18N, loadI18NFile } = require("./js/logic/i18n.js");
+
 const { BrowserWindow, app, ipcMain } = require("electron")
 const path = require('node:path')
 const fs = require('fs');
@@ -101,6 +103,14 @@ app.whenReady().then(async () => {
     await preCacheFiles().then(async () => {
         await showIntro();
         win.webContents.openDevTools();
+
+        var languageSetting;
+        await cachedFiles.get('settings.json').then((file) => {
+            languageSetting = getSetting(file, 'general.language', 'en');
+            loadI18NFile(languageSetting).then((languageFile) => {
+                win.webContents.executeJavaScript(`localStorage.setItem('i18n', ${JSON.stringify(languageFile)})`);
+            })
+        });
     });
     ipcMain.on('leave-intro', leaveIntro);
     ipcMain.on('switch-page', switchPage);
@@ -112,3 +122,5 @@ app.whenReady().then(async () => {
 try {
     require('electron-reloader')(module)
 } catch (_) { }
+
+module.exports.cachedFiles = cachedFiles;
