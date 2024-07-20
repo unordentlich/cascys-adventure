@@ -73,3 +73,75 @@ If you have found a bug that you would like to fix yourself, please fork the rep
 
 Otherwise, you can also create an issue with the corresponding labels so that other developers have the opportunity to fix the bug.
 Thank you very much for your help!
+
+<br>
+
+---
+
+<br>
+
+#### How to setup the project
+
+This project runs with the latest version of NodeJS. Please make sure that you've [downloaded](https://nodejs.org/en/download/prebuilt-installer) it before.
+
+1. Fork or clone the repository to your Desktop
+2. Open a terminal session in the project folder or open it with an IDE of your choice
+3. Execute `npm run start` to boot up the application
+
+<br>
+
+---
+
+#### What's planned for the future?
+
+<table>
+    <thead>
+        <tr>
+            <td><b>🎉 Feature</b></td>
+            <td><b>📑 Status</b></td>
+            <td><b>🗓️ Version</b></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>I18N Support</td>
+            <td>💖 Released</td>
+            <td align="center"><b>v1.0</b></td>
+        </tr>
+        <tr>
+            <td>Multiplayer (Peer 2 Peer)</td>
+            <td>💡 Planned</td>
+            <td align="center"><b>/</b></td>
+        </tr>
+        <tr>
+            <td>CSS Validator</td>
+            <td>💡 Planned</td>
+            <td align="center"><b>/</b></td>
+        </tr>
+        <tr>
+            <td>Animated map tiles</td>
+            <td>💡 Planned</td>
+            <td align="center"><b>/</b></td>
+        </tr>
+    </tbody>
+</table>
+<code><b>💡 Planned</b> = Not even started yet / <b>🕑 Pending</b> = Currently working on it / <b>🎉 Ready for Release</b> = Feature implemented with an update but not online at the addon store yet / <b>💖 Released</b> = Features are available at the latest version from the addon store / <b>🛑 Canceled</b> = Feature won't be implemented</code>
+
+<br>
+
+---
+
+#### Credits & More
+
+
+With Cascy's Coding Adventure, I hope to be able to give some newcomers to frontend development a helping hand and introduce them to the basics of CSS3. 🚀
+
+
+
+<img src="https://assets.hackclub.com/flag-orpheus-left.svg" height="100">
+
+I would especially like to mention the [HackClub](https://hackclub.com/) organization, which was able to motivate me to start and develop this project through their [**Arcade 2024**](https://hackclub.com/arcade) event. 🦕
+Thank you for this great event and keep up the good work!
+
+&copy; unordentlich 2024<br>
+<i>This game was developed as a private project. Commercial duplication or provision is not intended. The distribution and reproduction of copies is prohibited without the consent of the author. The project may also not be issued, sold or presented as one's own.</i>
