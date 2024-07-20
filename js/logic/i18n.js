@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require("path");
 
-//@todo implement in frontend
 async function loadI18NFile(language) {
     return new Promise(async (resolve, reject) => {
         const filePath = path.join(path.resolve('./'), 'assets', 'i18n', '%lang%.json');
