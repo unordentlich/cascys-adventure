@@ -123,6 +123,11 @@ This project runs with the latest version of NodeJS. Please make sure that you'v
             <td>💡 Planned</td>
             <td align="center"><b>/</b></td>
         </tr>
+        <tr>
+            <td>Auto Updater (with GitHub Release fetches)</td>
+            <td>💡 Planned</td>
+            <td align="center"><b>/</b></td>
+        </tr>
     </tbody>
 </table>
 <code><b>💡 Planned</b> = Not even started yet / <b>🕑 Pending</b> = Currently working on it / <b>🎉 Ready for Release</b> = Feature implemented with an update but not online at the addon store yet / <b>💖 Released</b> = Features are available at the latest version from the addon store / <b>🛑 Canceled</b> = Feature won't be implemented</code>
@@ -136,11 +141,16 @@ This project runs with the latest version of NodeJS. Please make sure that you'v
 
 With Cascy's Coding Adventure, I hope to be able to give some newcomers to frontend development a helping hand and introduce them to the basics of CSS3. 🚀
 
+A big thank you to everyone who enriched Cascy's Coding Adventure with their creativity, skills and motivation. A good game lives from its contributions.<br>
+<a href="https://github.com/unordentlich/cascys-adventure/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=unordentlich/cascys-adventure" width="40"/>
+</a>
 
+But it is not only through active assistance that a project can become what it is. Sometimes it's also the ones who make you do it in the first place!
 
 <img src="https://assets.hackclub.com/flag-orpheus-left.svg" height="100">
 
-I would especially like to mention the [HackClub](https://hackclub.com/) organization, which was able to motivate me to start and develop this project through their [**Arcade 2024**](https://hackclub.com/arcade) event. 🦕
+At this point, I would especially like to mention the [HackClub](https://hackclub.com/) organization, which was able to motivate me to start and develop this project through their [**Arcade 2024**](https://hackclub.com/arcade) event. 🦕
 Thank you for this great event and keep up the good work!
 
 &copy; unordentlich 2024<br>
