@@ -18,7 +18,7 @@ To add to the concept around Cascy's journey through the depths of web developme
 
 There are a variety of ways to support the game in its brilliance. Be it **new translations**, **features**, **levels**, **assets**, **sounds**, **music**, **dialogs** or even **bug fixes**.
 
-An information on how to contribute is linked [here](CONTRIBUTIONS.md). Thank you!
+An information on how to contribute is linked [here](CONTRIBUTING.md). Thank you!
 
 <br>
 
