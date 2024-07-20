@@ -45,6 +45,14 @@ const showIntro = async () => {
     ipcMain.on('toggle-fullscreen', (event, mode) => {
         win.setFullScreen(mode);
     });
+    ipcMain.on('reload-i18n', async (event) => {
+        var languageSetting;
+        var file = cachedFiles.get('settings.json')
+        languageSetting = getSetting(file, 'general.language', 'en');
+        loadI18NFile(languageSetting).then((languageFile) => {
+            win.webContents.executeJavaScript(`localStorage.setItem('i18n', ${JSON.stringify(languageFile)}); window.dispatchEvent(new StorageEvent('storage', { key: 'i18n' }));`);
+        });
+    })
     ipcMain.handle('information', (event) => {
         return {
             fullscreen: win.fullScreen,

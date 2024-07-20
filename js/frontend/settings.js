@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         element.addEventListener("change", () => {
             saveSetting(element.getAttribute("key"), element.value);
 
-            if(element.hasAttribute("liveUpdate")) {
+            if (element.hasAttribute("liveUpdate")) {
                 liveUpdate(element.getAttribute("key"), element.value);
             }
             console.log("Setting %s has changed to %s", element.getAttribute("key"), element.value);
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.getElementById("star-amount").innerText = loadGitHubStarCount();
-    document.getElementById("btn-exit").addEventListener("click", () => {window.electronAPI.switchPage('views/main_menu.html');});
+    document.getElementById("btn-exit").addEventListener("click", () => { window.electronAPI.switchPage('views/main_menu.html'); });
 })
 
 function getSetting(key) {
@@ -115,15 +115,25 @@ function loadGitHubStarCount() {
 }
 
 function liveUpdate(key, newValue) {
-    switch(key) {
+    switch (key) {
         case 'performance.window_mode':
-            if(newValue === '2') {
+            if (newValue === '2') {
                 window.electronAPI.toggleFullscreen(true);
                 document.getElementById('titlebar').style.display = 'none';
-            } else if(newValue === '1') {
+            } else if (newValue === '1') {
                 window.electronAPI.toggleFullscreen(false);
                 document.getElementById('titlebar').style.display = 'flex';
             }
-        break;
+            break;
+        case 'general.language':
+            window.electronAPI.reloadI18n();
+            break;
     }
 }
+
+window.addEventListener('storage', (e) => {
+    if(e.key === 'i18n') {
+        console.log('changes!')
+        loadI18n();
+    }
+})

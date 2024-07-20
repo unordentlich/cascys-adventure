@@ -8,4 +8,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveFile: (path, file) => ipcRenderer.send('save-file', path, file),
   toggleFullscreen: (mode) => ipcRenderer.send('toggle-fullscreen', mode),
   getInformation: () => ipcRenderer.invoke('information'),
+  reloadI18n: () => ipcRenderer.send('reload-i18n')
 })
