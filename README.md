@@ -74,6 +74,11 @@ This project runs with the latest version of NodeJS. Please make sure that you'v
             <td>💡 Planned</td>
             <td align="center"><b>/</b></td>
         </tr>
+        <tr>
+            <td>Add changelogs section (with GitHub Discussions)</td>
+            <td>💡 Planned</td>
+            <td align="center"><b>/</b></td>
+        </tr>
     </tbody>
 </table>
 <code><b>💡 Planned</b> = Not even started yet / <b>🕑 Pending</b> = Currently working on it / <b>🎉 Ready for Release</b> = Feature implemented with an update but not online at the addon store yet / <b>💖 Released</b> = Features are available at the latest version from the addon store / <b>🛑 Canceled</b> = Feature won't be implemented</code>
