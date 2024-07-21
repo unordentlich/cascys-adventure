@@ -1,5 +1,4 @@
 let settings;
-const githubRepoUrl = "https://api.github.com/repos/unordentlich/cascys-adventure";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadSettings();

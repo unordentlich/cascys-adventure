@@ -16,6 +16,9 @@
             document.getElementById("btn-settings").addEventListener("click", () => {
                 window.electronAPI.switchPage('views/settings.html');
             });
+            document.getElementById("btn-changelog").addEventListener("click", () => {
+                window.electronAPI.switchPage('views/changelog.html');
+            });
             document.getElementById("btn-leave").addEventListener("click", () => {
                 document.getElementById("leave-confirmation-popup").style.display = 'block';
             });
@@ -53,6 +56,9 @@
                 <button class="primary-btn level-creator" id="btn-level-creator"><img
                         src="../assets/icons/puzzle.png"><span i18n="main_menu.buttons.level_creator">Level
                         Creator</span></button>
+                <button class="secondary-btn level-creator" id="btn-changelog"><img
+                        src="../assets/icons/dredge.png"><span
+                        i18n="main_menu.buttons.changelog">Changelog</span></button>
                 <button class="secondary-btn level-creator" id="btn-settings"><img
                         src="../assets/icons/dredge.png"><span
                         i18n="main_menu.buttons.settings">Settings</span></button>
@@ -128,15 +134,6 @@
                             <h5>Tutorial</h5>
                         </div>
                     </div>
-                </div>
-                <div class="changelog">
-                    <h5>What's new?</h5>
-                    <div id="changelog-container">
-
-                    </div>
-                    <button class="primary-btn">
-                        View all changelogs
-                    </button>
                 </div>
             </div>
         </div>
