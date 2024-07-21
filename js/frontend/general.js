@@ -1,14 +1,15 @@
 const supportedLanguages = ['de', 'en'];
+let currentVersion = localStorage.getItem('version');
 const githubRepoUrl = "https://api.github.com/repos/unordentlich/streamchat";
 
 document.addEventListener("DOMContentLoaded", () => {
+    getInformationFromController();
     hideTaskbarOnFullscreen();
     loadI18n();
 })
 
 window.addEventListener("load", () => {
     var isMenuPage = window.location !== 'main_menu.html' && window.location !== 'intro/logo.html' && window.location !== 'changelog.html';
-    console.log(isMenuPage);
     if(!isMenuPage) return;
     loadGitHubChangelog();
 })
@@ -19,9 +20,15 @@ function hideTaskbarOnFullscreen() {
     } else {
         document.getElementById('titlebar').style.display = 'flex';
     }
+}
+
+function getInformationFromController() {
     window.electronAPI.getInformation().then((cb) => {
         localStorage.setItem('fullscreenMode', cb.fullscreen ?? false);
+        localStorage.setItem('version', cb.version ?? '1.0.0');
     });
+
+    currentVersion = localStorage.getItem('version');
 }
 
 function getSupportedLanguages() {

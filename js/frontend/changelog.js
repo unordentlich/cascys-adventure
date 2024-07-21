@@ -1,15 +1,4 @@
-
 document.addEventListener('DOMContentLoaded', () => {
-    /**var json = loadGitHubChangelog();
-    const container = document.getElementById('changelog-container');
-    for (let i = 0; i < json.entries.length; i++) {
-        const entry = json.entries[i]
-        var e = document.createElement('div');
-        e.classList.add('entry');
-        e.innerHTML = entry.notes;
-        container.appendChild(e);
-    }**/
-
     visualizeList();
 })
 
@@ -29,7 +18,8 @@ function visualizeList() {
         flex.style.justifyContent = 'space-between';
 
         let tag = document.createElement('p');
-        tag.innerText = entry.version;
+        tag.classList.add('flex');
+        tag.innerHTML = (isVersionNewer(entry.version) ? '<span class="new-label">NEW</span>' : '') + entry.version;
         let date = document.createElement('p');
         date.classList.add('sub');
         date.innerText = formatCustomDate(Date.parse(entry.date));
@@ -87,4 +77,25 @@ function formatCustomDate(dateInput) {
             day: 'numeric'
         }).format(date);
     }
+}
+
+function isVersionNewer(ver) {
+    ver = ver.replaceAll('v', '');
+    const versionLength = 8;
+
+    let verWithoutPoints = ver.replaceAll('.', '');
+    let currentVerWithoutPoints = currentVersion.replaceAll('.', '');
+
+    for(let i = 0; i < versionLength - verWithoutPoints.length; i++) {
+        verWithoutPoints += '0';
+    }
+
+    for(let i = 0; i < versionLength - currentVerWithoutPoints.length; i++) {
+        currentVerWithoutPoints += '0';
+    }
+
+    let parsedVer = parseInt(verWithoutPoints);
+    let parsedCurrentVer = parseInt(currentVerWithoutPoints);
+
+    return parsedVer > parsedCurrentVer;
 }

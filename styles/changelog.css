@@ -104,6 +104,18 @@ h2 {
     margin: 0;
 }
 
+.new-label {
+    background-color: rgb(255, 119, 119);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 2px 0 2px;
+    margin: 0;
+    border-radius: 3px;
+    margin-right: 5px;
+}
+
 ::-webkit-scrollbar {
     width: 8px;
 }

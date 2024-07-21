@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.getElementById("star-amount").innerText = loadGitHubStarCount();
+    document.getElementById("version").innerText = currentVersion;
     document.getElementById("btn-exit").addEventListener("click", () => { window.electronAPI.switchPage('views/main_menu.html'); });
 })
 

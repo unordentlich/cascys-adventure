@@ -55,6 +55,7 @@ const showIntro = async () => {
     })
     ipcMain.handle('information', (event) => {
         return {
+            version: app.getVersion(),
             fullscreen: win.fullScreen,
         }
     });
