@@ -9,6 +9,7 @@ let offsetX = 0;
 let offsetY = 0;
 
 let dragging = false;
+let clicked = false;
 let mouseClicked = [];
 let lastClicked = [0, 0];
 let mouseOffsetX = 50;
@@ -18,6 +19,8 @@ let zoom = 0.5;
 let zoomStep = 0.2;
 let maxZoom = 4.5;
 let minZoom = 0.5;
+
+let elements = [];
 
 let images = new Map();
 
@@ -41,7 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
         prepareCanvas();
 
         canvas.addEventListener("wheel", (e) => {
-            console.log(zoom);
             if (e.wheelDelta) {
                 if (e.wheelDelta > 0) {
                     if (zoom >= maxZoom) return;
@@ -53,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 prepareCanvas();
                 return;
             }
-    
+
             if (e.deltaY > 0) {
                 if (zoom >= maxZoom) return;
                 zoom += zoomStep;
@@ -63,21 +65,29 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             prepareCanvas();
         });
-    
+
         canvas.addEventListener("mousedown", (e) => {
             dragging = true;
+            clicked = true;
             mouseClicked = [e.clientX, e.clientY];
         });
-    
+
         canvas.addEventListener("mousemove", (e) => {
             if (!dragging) return;
+            clicked = false;
             mouseOffsetX = lastClicked[0] + (e.clientX - mouseClicked[0]) * (zoom <= minZoom ? 2 : 1);
             mouseOffsetY = lastClicked[1] + (e.clientY - mouseClicked[1]) * (zoom <= minZoom ? 2 : 1);
             console.log(mouseOffsetX, mouseOffsetY);
             prepareCanvas();
         });
-    
-    
+
+        canvas.addEventListener('mouseup', (event) => {
+            if(clicked) {
+                clicked = false;
+                selectChunk(event);
+            }
+        })
+
         const mouseUpOut = () => {
             if (!dragging) return;
             dragging = false;
@@ -85,15 +95,15 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         canvas.addEventListener("mouseup", mouseUpOut);
         canvas.addEventListener("mouseout", mouseUpOut);
-    
-    }, 1000);
+
+    }, 200);
 
     document.getElementById("center-btn").addEventListener("click", () => {
         resetCanvasView();
     });
     document.getElementById("btn-exit").addEventListener("click", () => {
         const confirmation = confirm('You are about to leave the Level Editor! Are you sure about it?');
-        if(!confirmation) return;
+        if (!confirmation) return;
         window.electronAPI.switchPage('views/main_menu.html');
     });
 });
@@ -124,6 +134,7 @@ function prepareCanvas() {
     ctx.resetTransform();
     ctx.scale(zoom, zoom);
     ctx.translate(mouseOffsetX, mouseOffsetY);
+    elements = [];
 
     let xPos = 0 + (offsetX * pixelSize);
     let yPos = 0 + (offsetY * pixelSize);
@@ -138,9 +149,40 @@ function prepareCanvas() {
         ctx.beginPath();
 
         ctx.drawImage(sprite.image, sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, pixelSize, pixelSize);
+        ctx.strokeRect(xPos, yPos, pixelSize, pixelSize);
+
+        ctx.font = "30px Arial";
+        ctx.fillText(i, xPos + pixelSize / 2, yPos + pixelSize / 2);
+
         ctx.stroke();
+
+        elements.push({
+            top: yPos,
+            left: xPos,
+            id: i,
+            height: pixelSize,
+            width: pixelSize
+        });
         xPos += pixelSize;
     }
+}
+
+function selectChunk(event) {
+    const realPosition = toRelativeCanvasPosition(event.clientX, event.clientY);
+    elements.forEach(function (element) {
+        if (realPosition[1] > element.top && realPosition[1] < element.top + element.height
+            && realPosition[0] > element.left && realPosition[0] < element.left + element.width) {
+            alert(`Element ${element.id} at ${element.left}, ${element.top}`);
+        }
+    });
+}
+
+function toRelativeCanvasPosition(x, y) {
+    const rect = canvas.getBoundingClientRect();
+    const transform = ctx.getTransform();
+    const canvasX = (x - rect.left - transform.e) / transform.a;
+    const canvasY = (y - rect.top - transform.f) / transform.d;
+    return [canvasX, canvasY];
 }
 
 function resetCanvasView() {
