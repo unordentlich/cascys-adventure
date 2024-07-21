@@ -140,7 +140,7 @@ function prepareCanvas() {
     let xPos = 0 + (offsetX * pixelSize);
     let yPos = 0 + (offsetY * pixelSize);
 
-    var sprite = selectSprite("map_basic", 0, 2);
+    var sprite = selectSprite("map_basic", 0, 0);
     for (let i = 0; i < height * width; i++) {
         if (xPos >= width * pixelSize + offsetX * pixelSize) {
             xPos = 0 + (offsetX * pixelSize);
@@ -149,7 +149,9 @@ function prepareCanvas() {
 
         ctx.beginPath();
 
-        ctx.drawImage(sprite.image, sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, pixelSize, pixelSize);
+        let rotation = (i % 5 === 0 ? 90 : 0);
+
+        ctx.drawImage((rotation !== 0 ? rotateImage(sprite.image, rotation) : sprite.image), sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, pixelSize, pixelSize);
         ctx.strokeRect(xPos, yPos, pixelSize, pixelSize);
 
         if(selectedElement === i) {
@@ -172,7 +174,8 @@ function prepareCanvas() {
             left: xPos,
             id: i,
             height: pixelSize,
-            width: pixelSize
+            width: pixelSize,
+            rotation: rotation
         });
         xPos += pixelSize;
     }
@@ -236,14 +239,38 @@ function preloadImages() {
 
 function innerChunkPropertiesInFields(chunk) {
     const idInp = document.getElementById('inp-chunk-id'),
+        rotationInp = document.getElementById('inp-chunk-rotation'),
         xInp = document.getElementById('inp-chunk-x'),
         yInp = document.getElementById('inp-chunk-y'),
         heightInp = document.getElementById('inp-chunk-height'),
         widthInp = document.getElementById('inp-chunk-width');
 
+    rotationInp.value = chunk.rotation + "°";
     idInp.value = chunk.id;
     xInp.value = chunk.left;
     yInp.value = chunk.top;
     heightInp.value = chunk.height;
     widthInp.value = chunk.width;
+}
+
+function rotateImage(img, degrees){
+    // pre cache rotated images (LAGGS!!!)
+    if(degrees !== 90 && degrees !== 180 && degrees !== 270 && degrees !== 360) return;
+
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+    if(degrees === 90 || degrees === 180) {
+        canvas.height = img.width;
+    canvas.width = img.height;
+    }
+
+    context.clearRect(0,0,canvas.width,canvas.height);
+    context.save();
+    context.translate(canvas.width/1.5,canvas.height/2);
+    context.rotate(degrees*Math.PI/180);
+    context.drawImage(img,-img.width/2,-img.width/2);
+    
+    var returnImg = new Image();
+    returnImg.src = canvas.toDataURL();
+    return returnImg;
 }
