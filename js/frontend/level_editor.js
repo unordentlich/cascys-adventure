@@ -1,5 +1,5 @@
-const height = 32;
-const width = 32;
+const height = 16;
+const width = 16;
 const pixelSize = 200;
 const previewScale = 8;
 let canvas;
@@ -186,6 +186,7 @@ function selectChunk(event) {
             selectedElement = element.id;
 
             prepareCanvas();
+            innerChunkPropertiesInFields(element);
         }
     });
 }
@@ -231,4 +232,18 @@ function preloadImages() {
         }).catch(err => console.error(err));
     })
 
+}
+
+function innerChunkPropertiesInFields(chunk) {
+    const idInp = document.getElementById('inp-chunk-id'),
+        xInp = document.getElementById('inp-chunk-x'),
+        yInp = document.getElementById('inp-chunk-y'),
+        heightInp = document.getElementById('inp-chunk-height'),
+        widthInp = document.getElementById('inp-chunk-width');
+
+    idInp.value = chunk.id;
+    xInp.value = chunk.left;
+    yInp.value = chunk.top;
+    heightInp.value = chunk.height;
+    widthInp.value = chunk.width;
 }

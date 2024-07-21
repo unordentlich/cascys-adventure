@@ -114,6 +114,14 @@ label.key {
     gap: 20px;
 }
 
+input[disabled='true'] {
+    color: #8f8f8f;
+}
+
+.field.short {
+    width: 100px;   
+}
+
 @keyframes drag-me {
     0%, 100% {
         cursor: grab;
