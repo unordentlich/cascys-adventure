@@ -21,6 +21,7 @@ let maxZoom = 4.5;
 let minZoom = 0.5;
 
 let elements = [];
+let selectedElement;
 
 let images = new Map();
 
@@ -82,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         canvas.addEventListener('mouseup', (event) => {
-            if(clicked) {
+            if (clicked) {
                 clicked = false;
                 selectChunk(event);
             }
@@ -151,10 +152,20 @@ function prepareCanvas() {
         ctx.drawImage(sprite.image, sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, pixelSize, pixelSize);
         ctx.strokeRect(xPos, yPos, pixelSize, pixelSize);
 
+        if(selectedElement === i) {
+            ctx.lineWidth = 5.5;
+            ctx.fillStyle = "white"
+            ctx.strokeStyle="white";
+            ctx.strokeRect(xPos + 3, yPos + 3, pixelSize - 5.5, pixelSize - 5.5);
+            ctx.lineWidth = 1;
+            ctx.strokeStyle="black";
+        }
+
         ctx.font = "30px Arial";
         ctx.fillText(i, xPos + pixelSize / 2, yPos + pixelSize / 2);
 
         ctx.stroke();
+        ctx.fillStyle = "black";
 
         elements.push({
             top: yPos,
@@ -172,7 +183,9 @@ function selectChunk(event) {
     elements.forEach(function (element) {
         if (realPosition[1] > element.top && realPosition[1] < element.top + element.height
             && realPosition[0] > element.left && realPosition[0] < element.left + element.width) {
-            alert(`Element ${element.id} at ${element.left}, ${element.top}`);
+            selectedElement = element.id;
+
+            prepareCanvas();
         }
     });
 }
