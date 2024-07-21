@@ -24,7 +24,7 @@ body {
 }
 
 .list {
-    width: 200px;
+    min-width: 200px;
     border-radius: 10px;
     background-color: #242229;
     overflow-y: scroll;
@@ -55,6 +55,17 @@ body {
 
 h2 {
     margin-top: 0;
+}
+
+#preview {
+    padding: 10px 40px;
+    box-sizing: border-box;
+    display: none;
+    animation: 1s fadeIn forwards;
+}
+
+#preview h2 {
+    font-size: 18px;
 }
 
 ::-webkit-scrollbar {

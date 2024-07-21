@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
 function visualizeList() {
     const previewList = document.getElementById('preview-list');
     var entries = localStorage.getItem('github-releases-request');
-    console.log(entries);
     entries = JSON.parse(entries);
     entries = entries.entries;
 
@@ -27,13 +26,13 @@ function visualizeList() {
         container.classList.add('entry');
         let flex = document.createElement('div');
         flex.classList.add('flex');
+        flex.style.justifyContent = 'space-between';
 
         let tag = document.createElement('p');
         tag.innerText = entry.version;
         let date = document.createElement('p');
         date.classList.add('sub');
-
-        date.innerText = formatDate(Date.parse(entry.date));
+        date.innerText = formatCustomDate(Date.parse(entry.date));
 
         flex.appendChild(tag);
         flex.appendChild(date);
@@ -45,35 +44,45 @@ function visualizeList() {
 
         container.appendChild(flex);
         container.appendChild(changes);
+        container.addEventListener('click', () => { openEntry(entry.version) })
         previewList.appendChild(container);
     }
 }
 
-// Formatter for "Today" and "Yesterday" etc
-const relative = new Intl.RelativeTimeFormat(
-    'en-GB', {numeric: 'auto'}
-  );
-  // Formatter for weekdays, e.g. "Monday"
-  const short = new Intl.DateTimeFormat(
-    'en-GB', {weekday: 'long'}
-  );
-  // Formatter for dates, e.g. "Mon, 31 May 2021"
-  const long = new Intl.DateTimeFormat(
-    'en-GB', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric'
-  });
-  const formatDate = (date) => {
-    const now = new Date();
-    const then = date;
-    const days = (then - now) / 86400000;
-    if (days > -6) {
-      if (days > -2) {
-        return relative.format(days, 'day');
-      }
-      return short.format(date);
+function openEntry(version) {
+    const preview = document.getElementById('preview');
+    var entries = localStorage.getItem('github-releases-request');
+    entries = JSON.parse(entries);
+    entries = entries.entries;
+
+    var entry = entries.filter(e => e.version === version)[0];
+    preview.innerHTML = entry.notes;
+}
+
+function formatCustomDate(dateInput) {
+    const date = new Date(dateInput);
+    if (isNaN(date.getTime())) {
+        throw new Error("Invalid date input");
     }
-    return long.format(date);
-  };
+
+    const now = new Date();
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const dayInMillis = 24 * 60 * 60 * 1000;
+    const daysDifference = Math.floor((now - date) / dayInMillis);
+
+    if (date.toDateString() === now.toDateString()) {
+        return 'Today';
+    } else if (date.toDateString() === yesterday.toDateString()) {
+        return 'Yesterday';
+    } else if (daysDifference < 7) {
+        return `${daysDifference} days ago`;
+    } else {
+        return new Intl.DateTimeFormat('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        }).format(date);
+    }
+}
