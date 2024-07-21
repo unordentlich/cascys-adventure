@@ -38,6 +38,11 @@ body {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    cursor: pointer;
+}
+
+.entry:hover {
+    background-color: #524f5a;
 }
 
 .entry p {
@@ -54,18 +59,49 @@ body {
 }
 
 h2 {
-    margin-top: 0;
+    margin: 0;
 }
 
 #preview {
     padding: 10px 40px;
     box-sizing: border-box;
     display: none;
-    animation: 1s fadeIn forwards;
+    animation: 100ms fadeIn forwards;
 }
 
 #preview h2 {
     font-size: 18px;
+}
+
+#preview code {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #2a262f;
+    padding: 6px;
+    font-size: 10px;
+    border-radius: 4px;
+}
+
+.head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.head a, p {
+    margin: 0;
+    text-decoration: none;
+    color: white;
+    align-items: center;
+}
+
+.head a:hover {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+}
+
+#btn-exit p {
+    margin: 0;
 }
 
 ::-webkit-scrollbar {

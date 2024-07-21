@@ -51,12 +51,14 @@ function visualizeList() {
 
 function openEntry(version) {
     const preview = document.getElementById('preview');
+    preview.style.display = 'none';
     var entries = localStorage.getItem('github-releases-request');
     entries = JSON.parse(entries);
     entries = entries.entries;
 
     var entry = entries.filter(e => e.version === version)[0];
     preview.innerHTML = entry.notes;
+    preview.style.display = 'block';
 }
 
 function formatCustomDate(dateInput) {
