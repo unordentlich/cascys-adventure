@@ -36,7 +36,6 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
-    overflow: visible;
     scroll-behavior: smooth;
 }
 
@@ -180,6 +179,40 @@ h5 {
     width: 20px;
 }
 
+.changelog {
+    background-color: #2f2d35;
+    padding: 10px;
+    border-radius: 10px;
+    margin-left: 15px;
+}
+
+.entry {
+    width: 200px;
+    height: 100px;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #53515b;
+    text-overflow: ellipsis;
+}
+
+.changelog p {
+    margin: 0;
+}
+
+.changelog h5 {
+    padding: 5px 0;
+}
+
+.entry h1, h2, h3, h4, h5 {
+    font-size: 15px;
+}
+
+.changelog .primary-btn {
+    width: 100%;
+    font-size: 15px;
+    justify-content: center;
+}
 
 ::-webkit-scrollbar {
     height: 10px;
