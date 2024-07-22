@@ -136,21 +136,30 @@ document.addEventListener('keydown', (e) => {
     prepareCanvas();
 });
 
+function loadProject(pJson) {
+    project = JSON.parse(pJson);
+
+    prepareCanvas();
+}
+
 function prepareCanvas() {
+    console.log(project.chunks.length);
     ctx.restore();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();
     ctx.resetTransform();
     ctx.scale(zoom, zoom);
     ctx.translate(mouseOffsetX, mouseOffsetY);
-    project.chunks = [];
+    if(project.chunks.length === 0) return;
+    if(project.chunks.length !== project.height * project.width) {
+        alert('Warning! Map file is corrupted. Expected chunk amount: ' + project.height * project.width + ' -> Actual amount: ' + project.chunks.length);
+    }
 
     let xPos = 0 + (offsetX * project.pixelSize);
     let yPos = 0 + (offsetY * project.pixelSize);
 
-    let map = "map_basic";
-    var sprite = selectSprite(map, 0, 0);
     for (let i = 0; i < project.height * project.width; i++) {
+        const chunk = project.chunks[i];
         if (xPos >= project.width * project.pixelSize + offsetX * project.pixelSize) {
             xPos = 0 + (offsetX * project.pixelSize);
             yPos += project.pixelSize;
@@ -158,9 +167,8 @@ function prepareCanvas() {
 
         ctx.beginPath();
 
-        let rotation = (i % 5 === 0 ? 90 : 0);
-
-        ctx.drawImage((rotation !== 0 ? rotateImage(map, sprite.image, rotation) : sprite.image), sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, project.pixelSize, project.pixelSize);
+        var sprite = selectSprite(chunk.tile.map, chunk.tile.x, chunk.tile.y);
+        ctx.drawImage((chunk.rotation !== 0 ? rotateImage(chunk.tile.map, sprite.image, chunk.rotation) : sprite.image), sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, project.pixelSize, project.pixelSize);
         ctx.strokeRect(xPos, yPos, project.pixelSize, project.pixelSize);
 
         if(selectedChunk === i) {
@@ -178,19 +186,6 @@ function prepareCanvas() {
         ctx.stroke();
         ctx.fillStyle = "black";
 
-        project.chunks.push({
-            top: yPos,
-            left: xPos,
-            id: i,
-            height: project.pixelSize,
-            width: project.pixelSize,
-            rotation: rotation,
-            tile: {
-                map: map,
-                x: sprite.sx,
-                y: sprite.sy
-            }
-        });
         xPos += project.pixelSize;
     }
 }

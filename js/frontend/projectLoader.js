@@ -22,5 +22,7 @@ function loadDraftFromFile() {
     window.electronAPI.requestFile().then((file) => {
         console.log(file.content);
         if(!recentProjects.includes(file.path)) recentProjects.push(file.path);
+
+        loadProject(file.content);
     })
 }
