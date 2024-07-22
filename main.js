@@ -4,10 +4,13 @@ const { BrowserWindow, app, ipcMain, dialog } = require("electron")
 const path = require('node:path')
 const fs = require('fs');
 const { getSetting } = require("./js/logic/settingManager.js");
+const { loginDiscordRPC, updateDiscordRPC } = require("./js/logic/discordRPC.js");
 
 const GAME_NAME = "Cascy's Coding Adventure";
 const filesRequireCaching = ['settings.json'];
 const cachedFiles = new Map();
+
+let discordRPC = loginDiscordRPC();
 let win;
 
 const showIntro = async () => {
@@ -74,6 +77,10 @@ function leaveIntro(event) {
 
 function switchPage(event, destination) {
     win.loadFile(destination);
+
+    if(destination === 'views/level_editor.html') {
+        updateDiscordRPC(Date.now(), 'Level Creator', 'Working on new CSS lessons...')
+    }
 }
 
 function requestAsset(event, p) {
