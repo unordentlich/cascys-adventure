@@ -107,6 +107,16 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!confirmation) return;
         window.electronAPI.switchPage('views/main_menu.html');
     });
+
+    document.getElementById('btn-save-project').addEventListener('click', () => {
+        window.electronAPI.requestPath().then((path) => {
+            saveDraftToFile(path);
+        });
+    });
+
+    document.getElementById('btn-load-project').addEventListener('click', () => {
+        loadDraftFromFile();
+    });
 });
 
 const movementKeys = ['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'];
@@ -140,7 +150,8 @@ function prepareCanvas() {
     let xPos = 0 + (offsetX * pixelSize);
     let yPos = 0 + (offsetY * pixelSize);
 
-    var sprite = selectSprite("map_basic", 0, 0);
+    let map = "map_basic";
+    var sprite = selectSprite(map, 0, 0);
     for (let i = 0; i < height * width; i++) {
         if (xPos >= width * pixelSize + offsetX * pixelSize) {
             xPos = 0 + (offsetX * pixelSize);
@@ -151,7 +162,7 @@ function prepareCanvas() {
 
         let rotation = (i % 5 === 0 ? 90 : 0);
 
-        ctx.drawImage((rotation !== 0 ? rotateImage("map_basic", sprite.image, rotation) : sprite.image), sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, pixelSize, pixelSize);
+        ctx.drawImage((rotation !== 0 ? rotateImage(map, sprite.image, rotation) : sprite.image), sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, pixelSize, pixelSize);
         ctx.strokeRect(xPos, yPos, pixelSize, pixelSize);
 
         if(selectedElement === i) {
@@ -175,7 +186,12 @@ function prepareCanvas() {
             id: i,
             height: pixelSize,
             width: pixelSize,
-            rotation: rotation
+            rotation: rotation,
+            tile: {
+                map: map,
+                x: sprite.sx,
+                y: sprite.sy
+            }
         });
         xPos += pixelSize;
     }

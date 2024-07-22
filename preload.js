@@ -6,7 +6,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   requestAsset: (path) => ipcRenderer.invoke('request-asset', path),
   loadFile: (path) => ipcRenderer.invoke('load-file', path),
   saveFile: (path, file) => ipcRenderer.send('save-file', path, file),
+  saveGlobalFile: (path, file) => ipcRenderer.send('save-global-file', path, file),
   toggleFullscreen: (mode) => ipcRenderer.send('toggle-fullscreen', mode),
   getInformation: () => ipcRenderer.invoke('information'),
-  reloadI18n: () => ipcRenderer.send('reload-i18n')
+  reloadI18n: () => ipcRenderer.send('reload-i18n'),
+  requestPath: async () => ipcRenderer.invoke('request-path'),
+  requestFile: async () => ipcRenderer.invoke('request-file')
 })

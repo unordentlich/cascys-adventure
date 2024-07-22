@@ -1,6 +1,6 @@
 const { prepareI18N, loadI18NFile } = require("./js/logic/i18n.js");
 
-const { BrowserWindow, app, ipcMain } = require("electron")
+const { BrowserWindow, app, ipcMain, dialog } = require("electron")
 const path = require('node:path')
 const fs = require('fs');
 const { getSetting } = require("./js/logic/settingManager.js");
@@ -83,10 +83,10 @@ function requestAsset(event, p) {
     return `data:image/png;base64,${base64Image}`;
 }
 
-async function loadFile(event, p) {
+async function loadFile(event, p, fromRoot) {
     if (cachedFiles.has(p)) return cachedFiles.get(p);
     const filePath = path.join(app.getPath('userData'), p);
-    let file = await fs.promises.readFile(filePath, 'utf-8');
+    let file = await fs.promises.readFile((fromRoot ? p : filePath), 'utf-8');
     return file;
 }
 
@@ -94,6 +94,10 @@ function saveFile(event, p, file) {
     if (cachedFiles.has(p)) cachedFiles.set(p, file);
     const filePath = path.join(app.getPath('userData'), p);
     fs.writeFileSync(filePath, file);
+}
+
+function saveGlobalFile(event, p, file) {
+    fs.writeFileSync(p, file, { flag: 'wx' });
 }
 
 async function preCacheFiles() {
@@ -126,6 +130,30 @@ app.whenReady().then(async () => {
     ipcMain.handle('request-asset', requestAsset);
     ipcMain.handle('load-file', loadFile);
     ipcMain.on('save-file', saveFile);
+    ipcMain.on('save-global-file', saveGlobalFile);
+
+    ipcMain.handle('request-path', async (event) => {
+        var path = await dialog.showOpenDialog({
+            defaultPath: app.getPath('userData'),
+            properties: ['openDirectory']
+        });
+        console.log(path);
+        return path.filePaths;
+    });
+
+    ipcMain.handle('request-file', async (event) => {
+        var path = await dialog.showOpenDialog({
+            defaultPath: app.getPath('userData'),
+            filters: [
+                { name: "JSON File", extensions: ["json"] },
+                { name: "All Files", extensions: ["*"] }
+            ],
+            properties: ['openFile']
+        });
+        
+        var file = await loadFile(null, path.filePaths[0], true);
+        return file;
+    });
 });
 
 try {
