@@ -3,12 +3,16 @@ const { prepareI18N, loadI18NFile } = require("./js/logic/i18n.js");
 const { BrowserWindow, app, ipcMain, dialog } = require("electron")
 const path = require('node:path')
 const fs = require('fs');
-const { getSetting } = require("./js/logic/settingManager.js");
 const { loginDiscordRPC, updateDiscordRPC } = require("./js/logic/discordRPC.js");
+
+module.exports.getSetting = getSetting;
+console.log('exported modules', module.exports);
 
 const GAME_NAME = "Cascy's Coding Adventure";
 const filesRequireCaching = ['settings.json'];
 const cachedFiles = new Map();
+
+//broken, probably rollback to last commit required 
 
 let discordRPC = loginDiscordRPC();
 let win;
@@ -166,8 +170,26 @@ app.whenReady().then(async () => {
     });
 });
 
+function getSetting(key, fallback) {
+    let file = cachedFiles.get('settings.json') || {};
+    let json;
+    try {
+        json = JSON.parse(file);
+    } catch {
+        return fallback ?? null;
+    }
+    const keys = key.split('.');
+    let current = json;
+
+    for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) {
+            current[keys[i]] = {};
+        }
+        current = current[keys[i]];
+    }
+    return current[keys[keys.length - 1]];
+}
+
 try {
     require('electron-reloader')(module)
 } catch (_) { }
-
-module.exports.cachedFiles = cachedFiles;
