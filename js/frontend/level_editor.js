@@ -181,7 +181,7 @@ function prepareCanvas() {
         }
 
         ctx.font = "30px Arial";
-        ctx.fillText(i, xPos + project.pixelSize / 2, yPos + project.pixelSize / 2);
+        ctx.fillText(i, xPos + project.pixelSize / 2 - 10, yPos + project.pixelSize / 2);
 
         ctx.stroke();
         ctx.fillStyle = "black";
