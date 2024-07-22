@@ -18,10 +18,11 @@ async function setActivity(startTimestamp, text, sub) {
         details: text,
         state: sub,
         startTimestamp,
+        largeImageKey: 'rpc-logo',
         instance: false,
         buttons: [
             {
-                label: 'Download',
+                label: 'Get the game',
                 url: 'https://github.com/unordentlich/cascys-adventure'
             }
         ]
