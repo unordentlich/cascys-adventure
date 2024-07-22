@@ -152,7 +152,10 @@ app.whenReady().then(async () => {
         });
         
         var file = await loadFile(null, path.filePaths[0], true);
-        return file;
+        return {
+            path: path.filePaths[0],
+            content: file
+        };
     });
 });
 

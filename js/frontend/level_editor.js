@@ -1,7 +1,9 @@
-const height = 16;
-const width = 16;
-const pixelSize = 200;
-const previewScale = 8;
+let project = {
+    height: 16,
+    width: 16,
+    pixelSize: 200,
+    chunks: []
+}
 let canvas;
 let ctx;
 
@@ -20,8 +22,7 @@ let zoomStep = 0.2;
 let maxZoom = 4.5;
 let minZoom = 0.5;
 
-let elements = [];
-let selectedElement;
+let selectedChunk;
 
 let images = new Map();
 
@@ -121,8 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const movementKeys = ['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'];
 document.addEventListener('keydown', (e) => {
-    console.log(e.key);
-
     if (!movementKeys.includes(e.key)) return;
     if (e.key === 'w' || e.key === 'ArrowUp') {
         offsetY += 1;
@@ -133,7 +132,6 @@ document.addEventListener('keydown', (e) => {
     } else if (e.key === 'a' || e.key === 'ArrowLeft') {
         offsetX += 1;
     }
-    console.log(offsetX, offsetY);
 
     prepareCanvas();
 });
@@ -145,47 +143,47 @@ function prepareCanvas() {
     ctx.resetTransform();
     ctx.scale(zoom, zoom);
     ctx.translate(mouseOffsetX, mouseOffsetY);
-    elements = [];
+    project.chunks = [];
 
-    let xPos = 0 + (offsetX * pixelSize);
-    let yPos = 0 + (offsetY * pixelSize);
+    let xPos = 0 + (offsetX * project.pixelSize);
+    let yPos = 0 + (offsetY * project.pixelSize);
 
     let map = "map_basic";
     var sprite = selectSprite(map, 0, 0);
-    for (let i = 0; i < height * width; i++) {
-        if (xPos >= width * pixelSize + offsetX * pixelSize) {
-            xPos = 0 + (offsetX * pixelSize);
-            yPos += pixelSize;
+    for (let i = 0; i < project.height * project.width; i++) {
+        if (xPos >= project.width * project.pixelSize + offsetX * project.pixelSize) {
+            xPos = 0 + (offsetX * project.pixelSize);
+            yPos += project.pixelSize;
         }
 
         ctx.beginPath();
 
         let rotation = (i % 5 === 0 ? 90 : 0);
 
-        ctx.drawImage((rotation !== 0 ? rotateImage(map, sprite.image, rotation) : sprite.image), sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, pixelSize, pixelSize);
-        ctx.strokeRect(xPos, yPos, pixelSize, pixelSize);
+        ctx.drawImage((rotation !== 0 ? rotateImage(map, sprite.image, rotation) : sprite.image), sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, project.pixelSize, project.pixelSize);
+        ctx.strokeRect(xPos, yPos, project.pixelSize, project.pixelSize);
 
-        if(selectedElement === i) {
+        if(selectedChunk === i) {
             ctx.lineWidth = 5.5;
             ctx.fillStyle = "white"
             ctx.strokeStyle="white";
-            ctx.strokeRect(xPos + 3, yPos + 3, pixelSize - 5.5, pixelSize - 5.5);
+            ctx.strokeRect(xPos + 3, yPos + 3, project.pixelSize - 5.5, project.pixelSize - 5.5);
             ctx.lineWidth = 1;
             ctx.strokeStyle="black";
         }
 
         ctx.font = "30px Arial";
-        ctx.fillText(i, xPos + pixelSize / 2, yPos + pixelSize / 2);
+        ctx.fillText(i, xPos + project.pixelSize / 2, yPos + project.pixelSize / 2);
 
         ctx.stroke();
         ctx.fillStyle = "black";
 
-        elements.push({
+        project.chunks.push({
             top: yPos,
             left: xPos,
             id: i,
-            height: pixelSize,
-            width: pixelSize,
+            height: project.pixelSize,
+            width: project.pixelSize,
             rotation: rotation,
             tile: {
                 map: map,
@@ -193,16 +191,16 @@ function prepareCanvas() {
                 y: sprite.sy
             }
         });
-        xPos += pixelSize;
+        xPos += project.pixelSize;
     }
 }
 
 function selectChunk(event) {
     const realPosition = toRelativeCanvasPosition(event.clientX, event.clientY);
-    elements.forEach(function (element) {
+    project.chunks.forEach(function (element) {
         if (realPosition[1] > element.top && realPosition[1] < element.top + element.height
             && realPosition[0] > element.left && realPosition[0] < element.left + element.width) {
-            selectedElement = element.id;
+            selectedChunk = element.id;
 
             prepareCanvas();
             innerChunkPropertiesInFields(element);
@@ -270,7 +268,6 @@ function innerChunkPropertiesInFields(chunk) {
 }
 
 function rotateImage(map, img, degrees){
-    // pre cache rotated images (LAGGS!!!)
     if(degrees !== 90 && degrees !== 180 && degrees !== 270 && degrees !== 360) return;
     if(images.has(map + "#R")) return images.get(map + "#R");
 
