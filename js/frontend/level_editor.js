@@ -151,7 +151,7 @@ function prepareCanvas() {
 
         let rotation = (i % 5 === 0 ? 90 : 0);
 
-        ctx.drawImage((rotation !== 0 ? rotateImage(sprite.image, rotation) : sprite.image), sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, pixelSize, pixelSize);
+        ctx.drawImage((rotation !== 0 ? rotateImage("map_basic", sprite.image, rotation) : sprite.image), sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, pixelSize, pixelSize);
         ctx.strokeRect(xPos, yPos, pixelSize, pixelSize);
 
         if(selectedElement === i) {
@@ -253,9 +253,10 @@ function innerChunkPropertiesInFields(chunk) {
     widthInp.value = chunk.width;
 }
 
-function rotateImage(img, degrees){
+function rotateImage(map, img, degrees){
     // pre cache rotated images (LAGGS!!!)
     if(degrees !== 90 && degrees !== 180 && degrees !== 270 && degrees !== 360) return;
+    if(images.has(map + "#R")) return images.get(map + "#R");
 
     var canvas = document.createElement('canvas');
     var context = canvas.getContext('2d');
@@ -272,5 +273,6 @@ function rotateImage(img, degrees){
     
     var returnImg = new Image();
     returnImg.src = canvas.toDataURL();
+    images.set(map + '#R', returnImg);
     return returnImg;
 }
