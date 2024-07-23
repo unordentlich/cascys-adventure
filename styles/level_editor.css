@@ -145,6 +145,28 @@ input[disabled='true'] {
     filter: brightness(1.2);
 }
 
+.tileset {
+    display: grid;
+    gap: 20px;
+    width: 100%;
+    grid-template-columns: auto auto auto auto auto;
+}
+
+.tileset img {
+    width: 100%;
+    border-radius: 5px;
+    border: 3px solid rgb(43, 43, 43);
+    cursor: pointer;
+}
+
+.tileset img:hover {
+    border-color: white;
+}
+
+.tileset img.selected {
+    border-color: white;
+}
+
 @keyframes drag-me {
     0%, 100% {
         cursor: grab;

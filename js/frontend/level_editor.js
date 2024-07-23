@@ -23,6 +23,7 @@ let maxZoom = 4.5;
 let minZoom = 0.5;
 
 let selectedChunk;
+let selectedTileImage;
 
 let images = new Map();
 
@@ -35,6 +36,27 @@ window.addEventListener("resize", () => {
 
 document.addEventListener("DOMContentLoaded", () => {
     preloadImages();
+    prepareSpriteTiles().then(() => {
+        setTimeout(() => {
+            var availableTiles = document.getElementById('available-tiles');
+            for (let i = 0; i < sprites.length; i++) {
+                let sprite = sprites[i];
+                for (let j = 0; j < sprite.tileset.length; j++) {
+                    let tile = sprite.tileset[j];
+                    tile.img.addEventListener('click', () => {
+                        selectTileImage({
+                            img: tile.img,
+                            map: sprite.id,
+                            x: tile.x,
+                            y: tile.y
+                        });
+                    })
+                    availableTiles.appendChild(tile.img);
+                }
+            }
+        }, 200);
+
+    });
 
     setTimeout(() => {
         canvas = document.getElementById("map");
@@ -200,6 +222,12 @@ function selectChunk(event) {
             innerChunkPropertiesInFields(element);
         }
     });
+}
+
+function selectTileImage(metadata) {
+    if(selectedTileImage) selectedTileImage.img.classList.remove('selected');
+    selectedTileImage = metadata;
+    metadata.img.classList.add('selected');
 }
 
 function rotateCurrentChunk(rotation) {
