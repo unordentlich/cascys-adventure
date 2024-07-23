@@ -10,6 +10,10 @@ body {
     color: white;
 }
 
+img {
+    image-rendering: pixelated;
+}
+
 #titlebar {
     font-family: 'DPComic';
     height: 32px;

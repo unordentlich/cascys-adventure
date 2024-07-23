@@ -19,12 +19,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!element.hasAttribute("key")) return;
         element.addEventListener("change", () => {
-            saveSetting(element.getAttribute("key"), element.value);
+            var val = element.type === 'checkbox' ? element.checked : element.value;
+            saveSetting(element.getAttribute("key"), val);
 
             if (element.hasAttribute("liveUpdate")) {
-                liveUpdate(element.getAttribute("key"), element.value);
+                liveUpdate(element.getAttribute("key"), val);
             }
-            console.log("Setting %s has changed to %s", element.getAttribute("key"), element.value);
+            console.log("Setting %s has changed to %s", element.getAttribute("key"), val);
         });
     }
 
@@ -76,7 +77,13 @@ function loadSettings() {
             if (!element.hasAttribute("key")) return;
 
             var value = getSetting(element.getAttribute("key"));
-            if (value) element.value = value;
+            if (value) {
+                if(element.type === 'checkbox') {
+                    element.checked = value;
+                } else {
+                    element.value = value;
+                }
+            }
         }
     });
 }
