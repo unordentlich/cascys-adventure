@@ -202,6 +202,13 @@ function selectChunk(event) {
     });
 }
 
+function rotateCurrentChunk(rotation) {
+    if(!selectedChunk) return;
+
+    project.chunks.filter(c => c.id === selectedChunk)[0].rotation += rotation;
+    prepareCanvas();
+}
+
 function toRelativeCanvasPosition(x, y) {
     const rect = canvas.getBoundingClientRect();
     const transform = ctx.getTransform();

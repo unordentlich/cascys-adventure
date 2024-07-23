@@ -48,7 +48,13 @@
                     </div>
                     <div class="field">
                         <label class="key">Rotation:</label>
-                        <input placeholder="0°" id="inp-chunk-rotation" disabled="true">
+                        <div style="position: relative;">
+                            <input placeholder="0°" id="inp-chunk-rotation" disabled="true">
+                            <div class="input-integrated-buttons">
+                                <button onclick="() => {rotateCurrentChunk(90)}">↶</button>
+                                <button onclick="() => {rotateCurrentChunk(-90)}">↷</button>
+                            </div>
+                        </div>
                     </div>
     
                 </div>

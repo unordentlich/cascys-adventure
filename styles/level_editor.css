@@ -122,6 +122,29 @@ input[disabled='true'] {
     width: 100px;   
 }
 
+.input-integrated-buttons {
+    position: absolute;
+    top: 0;
+    right: 3px;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.input-integrated-buttons button {
+    background-color: rgb(46, 46, 46);
+    color: white;
+    border-radius: 2px;
+    border: 2px solid rgb(57, 57, 57);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.input-integrated-buttons button:hover {
+    filter: brightness(1.2);
+}
+
 @keyframes drag-me {
     0%, 100% {
         cursor: grab;
