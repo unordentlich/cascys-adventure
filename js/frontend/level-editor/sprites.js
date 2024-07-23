@@ -37,7 +37,6 @@ function splitTiles(sprite) {
     let sx = 0
     let sy = 0;
     for (let i = 0; i < sprite.tiles; i++) {
-        console.log('jk', sx, sy);
 
         if (sx >= sprite.width) {
             sx = 0;

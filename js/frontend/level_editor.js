@@ -101,7 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
             clicked = false;
             mouseOffsetX = lastClicked[0] + (e.clientX - mouseClicked[0]) * (zoom <= minZoom ? 2 : 1);
             mouseOffsetY = lastClicked[1] + (e.clientY - mouseClicked[1]) * (zoom <= minZoom ? 2 : 1);
-            console.log(mouseOffsetX, mouseOffsetY);
             prepareCanvas();
         });
 
@@ -189,7 +188,12 @@ function prepareCanvas() {
         ctx.beginPath();
 
         var sprite = selectSprite(chunk.tile.map, chunk.tile.x, chunk.tile.y);
-        ctx.drawImage((chunk.rotation !== 0 ? rotateImage(sprite, chunk.rotation) : sprite.image), sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, project.pixelSize, project.pixelSize);
+        if (i === 33) console.log(chunk.rotation !== 0 && chunk.rotation !== 360, chunk, sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, project.pixelSize, project.pixelSize);
+        if (chunk.rotation !== 0 && chunk.rotation !== 360) {
+            ctx.drawImage(rotateImage(sprite, chunk.rotation), xPos, yPos, project.pixelSize, project.pixelSize);
+        } else {
+            ctx.drawImage(sprite.image, sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, project.pixelSize, project.pixelSize);
+        }
         ctx.strokeRect(xPos, yPos, project.pixelSize, project.pixelSize);
 
         if (selectedChunk === i) {
@@ -220,12 +224,35 @@ function selectChunk(event) {
 
             prepareCanvas();
             innerChunkPropertiesInFields(element);
+
+            if (selectedTileImage) {
+                changeChunkTile();
+            }
         }
     });
 }
 
+function changeChunkTile() {
+    if (!selectedChunk || !selectedTileImage) return;
+
+    let chunk = project.chunks.filter(c => c.id === selectedChunk)[0];
+    chunk.tile = {
+        map: selectedTileImage.map,
+        x: selectedTileImage.x,
+        y: selectedTileImage.y
+    };
+
+    prepareCanvas();
+}
+
 function selectTileImage(metadata) {
-    if(selectedTileImage) selectedTileImage.img.classList.remove('selected');
+    if (selectedTileImage) {
+        selectedTileImage.img.classList.remove('selected');
+        if (selectedTileImage.img === metadata.img) {
+            selectedTileImage = null;
+            return;
+        }
+    }
     selectedTileImage = metadata;
     metadata.img.classList.add('selected');
 }
@@ -266,6 +293,7 @@ function selectSprite(id, x, y) {
 
     return {
         image: images.get(id),
+        map: id,
         swidth: pixelPerSlot,
         sheight: pixelPerSlot,
         sx: x * pixelPerSlot,
@@ -306,7 +334,7 @@ function innerChunkPropertiesInFields(chunk) {
 
 function rotateImage(sprite, degrees) {
     if (degrees !== 90 && degrees !== 180 && degrees !== 270 && degrees !== 360) return;
-    if (images.has(sprite.image + "#" + sprite.sx + "#" + sprite.sy + "#" + degrees)) return images.get(sprite.image + "#" + sprite.sx + "#" + sprite.sy + "#" + degrees);
+    if (images.has(sprite.map + "#" + sprite.sx + "#" + sprite.sy + (degrees >= 90 && degrees <= 270 ? "#" + degrees : ''))) return images.get(sprite.map + "#" + sprite.sx + "#" + sprite.sy + (degrees >= 90 && degrees <= 270 ? "#" + degrees : ''));
 
     var canvas = document.createElement('canvas');
     var context = canvas.getContext('2d');
@@ -331,6 +359,6 @@ function rotateImage(sprite, degrees) {
 
     var returnImg = new Image();
     returnImg.src = canvas.toDataURL();
-    images.set(sprite.image + "#" + sprite.sx + "#" + sprite.sy + "#" + degrees, returnImg);
+    images.set(sprite.map + "#" + sprite.sx + "#" + sprite.sy + (degrees >= 90 && degrees <= 270 ? "#" + degrees : ''), returnImg);
     return returnImg;
 }
