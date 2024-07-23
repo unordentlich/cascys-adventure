@@ -55,16 +55,12 @@
                         <input placeholder="0" id="inp-chunk-id" disabled="true">
                     </div>
                     <div class="field">
-                        <label class="key">Rotation:</label>
+                        <label class="key">Tile:</label>
                         <div style="position: relative;">
-                            <input placeholder="0°" id="inp-chunk-rotation" disabled="true">
-                            <div class="input-integrated-buttons">
-                                <button id="btn-rotate-p90">↶</button>
-                                <button id="btn-rotate-m90">↷</button>
-                            </div>
+                            <input placeholder="none" id="inp-chunk-tile" disabled="true">
+                            <img id="tile-preview">
                         </div>
                     </div>
-
                 </div>
                 <div class="dual">
                     <div class="field">
@@ -82,8 +78,20 @@
                         <input placeholder="64" id="inp-chunk-height" disabled="true">
                     </div>
                     <div class="field">
-                        <label class="key">Height:</label>
+                        <label class="key">Width:</label>
                         <input placeholder="64" id="inp-chunk-width" disabled="true">
+                    </div>
+                </div>
+                <div class="dual">
+                    <div class="field">
+                        <label class="key">Rotation:</label>
+                        <div style="position: relative;">
+                            <input placeholder="0°" id="inp-chunk-rotation" disabled="true">
+                            <div class="input-integrated-buttons">
+                                <button id="btn-rotate-p90">↶</button>
+                                <button id="btn-rotate-m90">↷</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div style="margin-top: auto;">

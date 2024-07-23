@@ -188,12 +188,7 @@ function prepareCanvas() {
         ctx.beginPath();
 
         var sprite = selectSprite(chunk.tile.map, chunk.tile.x, chunk.tile.y);
-        if (i === 33) console.log(chunk.rotation !== 0 && chunk.rotation !== 360, chunk, sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, project.pixelSize, project.pixelSize);
-        if (chunk.rotation !== 0 && chunk.rotation !== 360) {
-            ctx.drawImage(rotateImage(sprite, chunk.rotation), xPos, yPos, project.pixelSize, project.pixelSize);
-        } else {
-            ctx.drawImage(sprite.image, sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, project.pixelSize, project.pixelSize);
-        }
+        ctx.drawImage(getImage(sprite, chunk.rotation), xPos, yPos, project.pixelSize, project.pixelSize);
         ctx.strokeRect(xPos, yPos, project.pixelSize, project.pixelSize);
 
         if (selectedChunk === i) {
@@ -243,6 +238,7 @@ function changeChunkTile() {
     };
 
     prepareCanvas();
+    innerChunkPropertiesInFields(chunk);
 }
 
 function selectTileImage(metadata) {
@@ -322,6 +318,8 @@ function innerChunkPropertiesInFields(chunk) {
         xInp = document.getElementById('inp-chunk-x'),
         yInp = document.getElementById('inp-chunk-y'),
         heightInp = document.getElementById('inp-chunk-height'),
+        tileInp = document.getElementById('inp-chunk-tile'),
+        tileInpImg = document.getElementById('tile-preview'),
         widthInp = document.getElementById('inp-chunk-width');
 
     rotationInp.value = chunk.rotation + "°";
@@ -330,10 +328,12 @@ function innerChunkPropertiesInFields(chunk) {
     yInp.value = chunk.top;
     heightInp.value = chunk.height;
     widthInp.value = chunk.width;
+    tileInp.value = `${chunk.tile.map} [${chunk.tile.x}:${chunk.tile.y}]`;
+    tileInpImg.src = sprites.filter(s => s.id === chunk.tile.map)[0].tileset.filter(t => t.x === chunk.tile.x && t.y === chunk.tile.y)[0].img.src;
 }
 
-function rotateImage(sprite, degrees) {
-    if (degrees !== 90 && degrees !== 180 && degrees !== 270 && degrees !== 360) return;
+function getImage(sprite, degrees) {
+    if (degrees !== 0 && degrees !== 90 && degrees !== 180 && degrees !== 270 && degrees !== 360) return;
     if (images.has(sprite.map + "#" + sprite.sx + "#" + sprite.sy + (degrees >= 90 && degrees <= 270 ? "#" + degrees : ''))) return images.get(sprite.map + "#" + sprite.sx + "#" + sprite.sy + (degrees >= 90 && degrees <= 270 ? "#" + degrees : ''));
 
     var canvas = document.createElement('canvas');
