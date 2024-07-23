@@ -82,9 +82,7 @@ app.whenReady().then(async () => {
     await showIntro();
     win.webContents.openDevTools();
 
-    setTimeout(() => {
-        discordRPC = loginDiscordRPC();
-    }, 2000);
+    discordRPC = loginDiscordRPC();
 
     var languageSetting = await getSetting('general.language', 'en');
     loadI18NFile(languageSetting).then((languageFile) => {

@@ -142,7 +142,6 @@ function liveUpdate(key, newValue) {
 
 window.addEventListener('storage', (e) => {
     if(e.key === 'i18n') {
-        console.log('changes!')
         loadI18n();
     }
 })

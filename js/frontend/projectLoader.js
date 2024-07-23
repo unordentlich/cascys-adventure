@@ -20,7 +20,6 @@ function loadDraftFromFile() {
     var recentProjects = localStorage.getItem('recent-draft-projects') || [];
     if(recentProjects.length >= 5) recentProjects.slice(0,4);
     window.electronAPI.requestFile().then((file) => {
-        console.log(file.content);
         if(!recentProjects.includes(file.path)) recentProjects.push(file.path);
 
         loadProject(file.content);

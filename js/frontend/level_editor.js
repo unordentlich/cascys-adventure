@@ -143,7 +143,6 @@ function loadProject(pJson) {
 }
 
 function prepareCanvas() {
-    console.log(project.chunks.length);
     ctx.restore();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();

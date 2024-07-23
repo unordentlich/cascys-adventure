@@ -27,16 +27,16 @@ async function getSetting(key, fallback) {
 }
 
 async function preCacheFiles() {
-    return new Promise(async (resolve, reject) => {
-        filesRequireCaching.forEach(async item => {
-            let file = await loadFile(null, item);
-            if (!file) return;
-
-            cachedFiles.set(item, file);
-        });
-        resolve();
-    });
-}
+    for(let i = 0; i < filesRequireCaching.length; i++) {
+        const item = filesRequireCaching[i];
+        let file = await loadFile(null, item);
+        if(!file) return;
+      
+        cachedFiles.set(item, file);
+    }
+  
+    return cachedFiles;  
+  }
 
 async function loadFile(event, p, fromRoot) {
     if (cachedFiles.has(p)) return cachedFiles.get(p);
@@ -47,7 +47,6 @@ async function loadFile(event, p, fromRoot) {
 
 
 function saveFile(event, p, file) {
-    console.log('Save file in ' + p);
     if (cachedFiles.has(p)) cachedFiles.set(p, file);
     const filePath = path.join(app.getPath('userData'), p);
     fs.writeFileSync(filePath, file);

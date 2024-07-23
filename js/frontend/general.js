@@ -100,8 +100,6 @@ function loadGitHubChangelog() {
             var array = [];
             for (let i = 0; i < json.length; i++) {
                 const release = json[i];
-                console.log(release);
-                console.log('release found', (release['tag_name'] && release['body']))
                 if (release['tag_name'] && release['body']) {
                     array.push({
                         version: release['tag_name'],

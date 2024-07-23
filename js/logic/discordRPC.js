@@ -7,7 +7,6 @@ let rpcToggled = false;
 
 async function loginDiscordRPC() {
     rpcToggled = await getSetting('general.discord_rpc', 0);
-    console.log(rpcToggled, rpcToggled === '1');
     if(!rpcToggled) return;
     rpc.login({ clientId }).catch(console.error);
     return this;
