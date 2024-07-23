@@ -1,19 +1,20 @@
 const { Client } = require("discord-rpc-electron");
-const { getSetting } = require("../../main.js");
+const { getSetting } = require("../../dataController");
 
 const clientId = '1265011576977756191';
 let rpc = new Client({ transport: 'ipc' });
+let rpcToggled = false;
 
-console.log('getSetting', getSetting)
-
-function loginDiscordRPC() {
-    if(!getSetting('general.discord_rpc', false)) return;
+async function loginDiscordRPC() {
+    rpcToggled = await getSetting('general.discord_rpc', 0);
+    console.log(rpcToggled, rpcToggled === '1');
+    if(!rpcToggled) return;
     rpc.login({ clientId }).catch(console.error);
     return this;
 }
 
 async function setActivity(startTimestamp, text, sub) {
-    if(!getSetting('general.discord_rpc', false)) return;
+    if(!rpcToggled) return;
     if (!rpc) {
         return;
     }

@@ -1,28 +1,20 @@
-const { prepareI18N, loadI18NFile } = require("./js/logic/i18n.js");
+const { loadI18NFile } = require("./js/logic/i18n.js");
 
 const { BrowserWindow, app, ipcMain, dialog } = require("electron")
 const path = require('node:path')
 const fs = require('fs');
 const { loginDiscordRPC, updateDiscordRPC } = require("./js/logic/discordRPC.js");
-
-module.exports.getSetting = getSetting;
-console.log('exported modules', module.exports);
+const { getSetting, loadFile, preCacheFiles, saveFile } = require("./dataController.js");
 
 const GAME_NAME = "Cascy's Coding Adventure";
-const filesRequireCaching = ['settings.json'];
-const cachedFiles = new Map();
 
-//broken, probably rollback to last commit required 
-
-let discordRPC = loginDiscordRPC();
+let discordRPC;
 let win;
 
 const showIntro = async () => {
     var fullscreenSetting = 1;
-    if (cachedFiles.has('settings.json'))
-        await cachedFiles.get('settings.json').then((file) => {
-            fullscreenSetting = getSetting(file, 'performance.window_mode', 3);
-        })
+    fullscreenSetting = await getSetting('performance.window_mode', 3);
+
     win = new BrowserWindow({
         minHeight: 700,
         minWidth: 1200,
@@ -53,13 +45,11 @@ const showIntro = async () => {
         win.setFullScreen(mode);
     });
     ipcMain.on('reload-i18n', async (event) => {
-        var languageSetting;
-        var file = cachedFiles.get('settings.json')
-        languageSetting = getSetting(file, 'general.language', 'en');
+        var languageSetting = await getSetting('general.language', 'en');
         loadI18NFile(languageSetting).then((languageFile) => {
             win.webContents.executeJavaScript(`localStorage.setItem('i18n', ${JSON.stringify(languageFile)}); window.dispatchEvent(new StorageEvent('storage', { key: 'i18n' }));`);
         });
-    })
+    });
     ipcMain.handle('information', (event) => {
         return {
             version: app.getVersion(),
@@ -68,21 +58,10 @@ const showIntro = async () => {
     });
 }
 
-function leaveIntro(event) {
-    win.loadFile("views/main_menu.html");
-    setTimeout(() => {
-        win.setTitleBarOverlay({
-            color: 'rgba(0,0,0,0)',
-            symbolColor: '#fff',
-            height: 32
-        });
-    }, 2000)
-}
-
 function switchPage(event, destination) {
     win.loadFile(destination);
 
-    if(destination === 'views/level_editor.html') {
+    if (destination === 'views/level_editor.html') {
         updateDiscordRPC(Date.now(), 'Level Creator', 'Working on new CSS lessons...')
     }
 }
@@ -94,49 +73,24 @@ function requestAsset(event, p) {
     return `data:image/png;base64,${base64Image}`;
 }
 
-async function loadFile(event, p, fromRoot) {
-    if (cachedFiles.has(p)) return cachedFiles.get(p);
-    const filePath = path.join(app.getPath('userData'), p);
-    let file = await fs.promises.readFile((fromRoot ? p : filePath), 'utf-8');
-    return file;
-}
-
-function saveFile(event, p, file) {
-    if (cachedFiles.has(p)) cachedFiles.set(p, file);
-    const filePath = path.join(app.getPath('userData'), p);
-    fs.writeFileSync(filePath, file);
-}
-
 function saveGlobalFile(event, p, file) {
     fs.writeFileSync(p, file, { flag: 'wx' });
 }
 
-async function preCacheFiles() {
-    return new Promise((resolve, reject) => {
-        filesRequireCaching.forEach(item => {
-            let file = loadFile(null, item);
-            if (!file) return;
-
-            cachedFiles.set(item, file);
-        });
-        resolve();
-    });
-}
-
 app.whenReady().then(async () => {
-    await preCacheFiles().then(async () => {
-        await showIntro();
-        win.webContents.openDevTools();
+    await preCacheFiles();
+    await showIntro();
+    win.webContents.openDevTools();
 
-        var languageSetting;
-        await cachedFiles.get('settings.json').then((file) => {
-            languageSetting = getSetting(file, 'general.language', 'en');
-            loadI18NFile(languageSetting).then((languageFile) => {
-                win.webContents.executeJavaScript(`localStorage.setItem('i18n', ${JSON.stringify(languageFile)})`);
-            })
-        });
+    setTimeout(() => {
+        discordRPC = loginDiscordRPC();
+    }, 2000);
+
+    var languageSetting = await getSetting('general.language', 'en');
+    loadI18NFile(languageSetting).then((languageFile) => {
+        win.webContents.executeJavaScript(`localStorage.setItem('i18n', ${JSON.stringify(languageFile)})`);
     });
-    ipcMain.on('leave-intro', leaveIntro);
+
     ipcMain.on('switch-page', switchPage);
     ipcMain.handle('request-asset', requestAsset);
     ipcMain.handle('load-file', loadFile);
@@ -148,7 +102,6 @@ app.whenReady().then(async () => {
             defaultPath: app.getPath('userData'),
             properties: ['openDirectory']
         });
-        console.log(path);
         return path.filePaths;
     });
 
@@ -161,7 +114,7 @@ app.whenReady().then(async () => {
             ],
             properties: ['openFile']
         });
-        
+
         var file = await loadFile(null, path.filePaths[0], true);
         return {
             path: path.filePaths[0],
@@ -169,26 +122,6 @@ app.whenReady().then(async () => {
         };
     });
 });
-
-function getSetting(key, fallback) {
-    let file = cachedFiles.get('settings.json') || {};
-    let json;
-    try {
-        json = JSON.parse(file);
-    } catch {
-        return fallback ?? null;
-    }
-    const keys = key.split('.');
-    let current = json;
-
-    for (let i = 0; i < keys.length - 1; i++) {
-        if (!current[keys[i]]) {
-            current[keys[i]] = {};
-        }
-        current = current[keys[i]];
-    }
-    return current[keys[keys.length - 1]];
-}
 
 try {
     require('electron-reloader')(module)
