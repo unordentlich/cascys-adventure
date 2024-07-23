@@ -2,7 +2,7 @@ function saveDraftToFile(path) {
     const f = {
         height: project.height,
         width: project.width,
-        pixelSize: pixelSize,
+        pixelSize: project.pixelSize,
         metadata: {
             name: 'Test project',
             draft: true,

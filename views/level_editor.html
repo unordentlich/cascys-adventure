@@ -9,6 +9,13 @@
     <script src="../js/frontend/general.js"></script>
     <script src="../js/frontend/level_editor.js"></script>
     <script src="../js/frontend/projectLoader.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('btn-rotate-p90').addEventListener('click', () => { rotateCurrentChunk(-90) });
+            document.getElementById('btn-rotate-m90').addEventListener('click', () => { rotateCurrentChunk(90) });
+        })
+    </script>
 </head>
 
 <body>
@@ -51,12 +58,12 @@
                         <div style="position: relative;">
                             <input placeholder="0°" id="inp-chunk-rotation" disabled="true">
                             <div class="input-integrated-buttons">
-                                <button onclick="rotateCurrentChunk(90)">↶</button>
-                                <button onclick="rotateCurrentChunk(-90)">↷</button>
+                                <button id="btn-rotate-p90">↶</button>
+                                <button id="btn-rotate-m90">↷</button>
                             </div>
                         </div>
                     </div>
-    
+
                 </div>
                 <div class="dual">
                     <div class="field">

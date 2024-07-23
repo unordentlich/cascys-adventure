@@ -149,8 +149,8 @@ function prepareCanvas() {
     ctx.resetTransform();
     ctx.scale(zoom, zoom);
     ctx.translate(mouseOffsetX, mouseOffsetY);
-    if(project.chunks.length === 0) return;
-    if(project.chunks.length !== project.height * project.width) {
+    if (project.chunks.length === 0) return;
+    if (project.chunks.length !== project.height * project.width) {
         alert('Warning! Map file is corrupted. Expected chunk amount: ' + project.height * project.width + ' -> Actual amount: ' + project.chunks.length);
     }
 
@@ -170,13 +170,13 @@ function prepareCanvas() {
         ctx.drawImage((chunk.rotation !== 0 ? rotateImage(sprite, chunk.rotation) : sprite.image), sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, project.pixelSize, project.pixelSize);
         ctx.strokeRect(xPos, yPos, project.pixelSize, project.pixelSize);
 
-        if(selectedChunk === i) {
+        if (selectedChunk === i) {
             ctx.lineWidth = 5.5;
             ctx.fillStyle = "white"
-            ctx.strokeStyle="white";
+            ctx.strokeStyle = "white";
             ctx.strokeRect(xPos + 3, yPos + 3, project.pixelSize - 5.5, project.pixelSize - 5.5);
             ctx.lineWidth = 1;
-            ctx.strokeStyle="black";
+            ctx.strokeStyle = "black";
         }
 
         ctx.font = "30px Arial";
@@ -203,11 +203,18 @@ function selectChunk(event) {
 }
 
 function rotateCurrentChunk(rotation) {
-    if(!selectedChunk) return;
+    if (!selectedChunk) return;
 
-    if(project.chunks.filter(c => c.id === selectedChunk)[0].rotation === 360) project.chunks.filter(c => c.id === selectedChunk)[0].rotation = 0;
-    project.chunks.filter(c => c.id === selectedChunk)[0].rotation += rotation;
+    let currentRotation = project.chunks.filter(c => c.id === selectedChunk)[0].rotation;
+    if (currentRotation === 360 && rotation === 90) {
+        project.chunks.filter(c => c.id === selectedChunk)[0].rotation = 90;
+    } else if (currentRotation === 0 && rotation === -90) {
+        project.chunks.filter(c => c.id === selectedChunk)[0].rotation = 270;
+    } else {
+        project.chunks.filter(c => c.id === selectedChunk)[0].rotation += rotation;
+    }
     prepareCanvas();
+    innerChunkPropertiesInFields(project.chunks.filter(c => c.id === selectedChunk)[0]);
 }
 
 function toRelativeCanvasPosition(x, y) {
@@ -269,9 +276,9 @@ function innerChunkPropertiesInFields(chunk) {
     widthInp.value = chunk.width;
 }
 
-function rotateImage(sprite, degrees){
-    if(degrees !== 90 && degrees !== 180 && degrees !== 270 && degrees !== 360) return;
-    if(images.has(sprite.image + "#" + sprite.sx + "#" + sprite.sy + "#" + degrees)) return images.get(sprite.image + "#" + sprite.sx + "#" + sprite.sy + "#" + degrees);
+function rotateImage(sprite, degrees) {
+    if (degrees !== 90 && degrees !== 180 && degrees !== 270 && degrees !== 360) return;
+    if (images.has(sprite.image + "#" + sprite.sx + "#" + sprite.sy + "#" + degrees)) return images.get(sprite.image + "#" + sprite.sx + "#" + sprite.sy + "#" + degrees);
 
     var canvas = document.createElement('canvas');
     var context = canvas.getContext('2d');
