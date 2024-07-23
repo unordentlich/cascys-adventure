@@ -167,7 +167,7 @@ function prepareCanvas() {
         ctx.beginPath();
 
         var sprite = selectSprite(chunk.tile.map, chunk.tile.x, chunk.tile.y);
-        ctx.drawImage((chunk.rotation !== 0 ? rotateImage(chunk.tile.map, sprite.image, chunk.rotation) : sprite.image), sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, project.pixelSize, project.pixelSize);
+        ctx.drawImage((chunk.rotation !== 0 ? rotateImage(sprite, chunk.rotation) : sprite.image), sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, xPos, yPos, project.pixelSize, project.pixelSize);
         ctx.strokeRect(xPos, yPos, project.pixelSize, project.pixelSize);
 
         if(selectedChunk === i) {
@@ -205,6 +205,7 @@ function selectChunk(event) {
 function rotateCurrentChunk(rotation) {
     if(!selectedChunk) return;
 
+    if(project.chunks.filter(c => c.id === selectedChunk)[0].rotation === 360) project.chunks.filter(c => c.id === selectedChunk)[0].rotation = 0;
     project.chunks.filter(c => c.id === selectedChunk)[0].rotation += rotation;
     prepareCanvas();
 }
@@ -268,25 +269,33 @@ function innerChunkPropertiesInFields(chunk) {
     widthInp.value = chunk.width;
 }
 
-function rotateImage(map, img, degrees){
+function rotateImage(sprite, degrees){
     if(degrees !== 90 && degrees !== 180 && degrees !== 270 && degrees !== 360) return;
-    if(images.has(map + "#R")) return images.get(map + "#R");
+    if(images.has(sprite.image + "#" + sprite.sx + "#" + sprite.sy + "#" + degrees)) return images.get(sprite.image + "#" + sprite.sx + "#" + sprite.sy + "#" + degrees);
 
     var canvas = document.createElement('canvas');
     var context = canvas.getContext('2d');
-    if(degrees === 90 || degrees === 180) {
-        canvas.height = img.width;
-    canvas.width = img.height;
+
+    if (degrees === 90 || degrees === 270) {
+        canvas.height = sprite.swidth;
+        canvas.width = sprite.sheight;
+    } else {
+        canvas.height = sprite.sheight;
+        canvas.width = sprite.swidth;
     }
 
-    context.clearRect(0,0,canvas.width,canvas.height);
+    context.clearRect(0, 0, canvas.width, canvas.height);
     context.save();
-    context.translate(canvas.width/1.5,canvas.height/2);
-    context.rotate(degrees*Math.PI/180);
-    context.drawImage(img,-img.width/2,-img.width/2);
-    
+
+    context.translate(canvas.width / 2, canvas.height / 2);
+    context.rotate(degrees * Math.PI / 180);
+    context.drawImage(sprite.image, sprite.sx, sprite.sy, sprite.swidth, sprite.sheight, -sprite.swidth / 2, -sprite.sheight / 2, sprite.swidth, sprite.sheight);
+
+    context.restore();
+
+
     var returnImg = new Image();
     returnImg.src = canvas.toDataURL();
-    images.set(map + '#R', returnImg);
+    images.set(sprite.image + "#" + sprite.sx + "#" + sprite.sy + "#" + degrees, returnImg);
     return returnImg;
 }
