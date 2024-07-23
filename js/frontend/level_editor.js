@@ -12,6 +12,7 @@ let offsetY = 0;
 
 let dragging = false;
 let clicked = false;
+let ctrlPressed = false;
 let mouseClicked = [];
 let lastClicked = [0, 0];
 let mouseOffsetX = 50;
@@ -22,7 +23,7 @@ let zoomStep = 0.2;
 let maxZoom = 4.5;
 let minZoom = 0.5;
 
-let selectedChunk;
+let selectedChunk = [];
 let selectedTileImage;
 
 let images = new Map();
@@ -143,6 +144,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const movementKeys = ['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'];
 document.addEventListener('keydown', (e) => {
+    if (e.key === 'Control') {
+        ctrlPressed = true;
+    }
     if (!movementKeys.includes(e.key)) return;
     if (e.key === 'w' || e.key === 'ArrowUp') {
         offsetY += 1;
@@ -156,6 +160,12 @@ document.addEventListener('keydown', (e) => {
 
     prepareCanvas();
 });
+
+document.addEventListener('keyup', (e) => {
+    if (e.key === 'Control') {
+        ctrlPressed = false;
+    }
+})
 
 function loadProject(pJson) {
     project = JSON.parse(pJson);
@@ -191,7 +201,7 @@ function prepareCanvas() {
         ctx.drawImage(getImage(sprite, chunk.rotation), xPos, yPos, project.pixelSize, project.pixelSize);
         ctx.strokeRect(xPos, yPos, project.pixelSize, project.pixelSize);
 
-        if (selectedChunk === i) {
+        if (selectedChunk.filter(c => c.id === i).length) {
             ctx.lineWidth = 5.5;
             ctx.fillStyle = "white"
             ctx.strokeStyle = "white";
@@ -215,10 +225,24 @@ function selectChunk(event) {
     project.chunks.forEach(function (element) {
         if (realPosition[1] > element.top && realPosition[1] < element.top + element.height
             && realPosition[0] > element.left && realPosition[0] < element.left + element.width) {
-            selectedChunk = element.id;
+
+            if (ctrlPressed) {
+                if (selectedChunk.includes(element)) {
+                    if (selectedChunk.indexOf(element) === 0) {
+                        selectedChunk.shift();
+                    } else {
+                        selectedChunk.splice(selectedChunk.indexOf(element), selectedChunk.indexOf(element));
+                    }
+                } else {
+                    selectedChunk.push(element);
+                }
+            } else {
+                selectedChunk = [];
+                selectedChunk[0] = element;
+            }
 
             prepareCanvas();
-            innerChunkPropertiesInFields(element);
+            innerChunkPropertiesInFields();
 
             if (selectedTileImage) {
                 changeChunkTile();
@@ -227,21 +251,28 @@ function selectChunk(event) {
     });
 }
 
-function changeChunkTile() {
-    if (!selectedChunk || !selectedTileImage) return;
+function changeChunkTile(tile) {
+    if (selectedChunk.length < 1 || (selectedChunk.length === 1 && !selectedTileImage)) return;
 
-    let chunk = project.chunks.filter(c => c.id === selectedChunk)[0];
-    chunk.tile = {
-        map: selectedTileImage.map,
-        x: selectedTileImage.x,
-        y: selectedTileImage.y
-    };
+    for (let i = 0; i < selectedChunk.length; i++) {
+        let chunk = selectedChunk[i];
+        chunk.tile = {
+            map: (selectedTileImage ? selectedTileImage.map : tile.map),
+            x: (selectedTileImage ? selectedTileImage.x : tile.x),
+            y: (selectedTileImage ? selectedTileImage.y : tile.y)
+        };
+    }
 
     prepareCanvas();
-    innerChunkPropertiesInFields(chunk);
+    innerChunkPropertiesInFields();
 }
 
 function selectTileImage(metadata) {
+    if (selectedChunk.length > 1) {
+        changeChunkTile(metadata);
+        return;
+    }
+
     if (selectedTileImage) {
         selectedTileImage.img.classList.remove('selected');
         if (selectedTileImage.img === metadata.img) {
@@ -254,18 +285,22 @@ function selectTileImage(metadata) {
 }
 
 function rotateCurrentChunk(rotation) {
-    if (!selectedChunk) return;
+    if (selectedChunk.length < 1) return;
 
-    let currentRotation = project.chunks.filter(c => c.id === selectedChunk)[0].rotation;
-    if (currentRotation === 360 && rotation === 90) {
-        project.chunks.filter(c => c.id === selectedChunk)[0].rotation = 90;
-    } else if (currentRotation === 0 && rotation === -90) {
-        project.chunks.filter(c => c.id === selectedChunk)[0].rotation = 270;
-    } else {
-        project.chunks.filter(c => c.id === selectedChunk)[0].rotation += rotation;
+    for (let i = 0; i < selectedChunk.length; i++) {
+        let chunk = selectedChunk[i];
+        if (chunk.rotation === 360 && chunk.rotation === 90) {
+            chunk.rotation = 90;
+        } else if (chunk.rotation === 0 && rotation === -90) {
+            chunk.rotation = 270;
+        } else if (chunk.rotation === 270 && rotation === 90) {
+            chunk.rotation = 0;
+        } else {
+            chunk.rotation += rotation;
+        }
     }
     prepareCanvas();
-    innerChunkPropertiesInFields(project.chunks.filter(c => c.id === selectedChunk)[0]);
+    innerChunkPropertiesInFields();
 }
 
 function toRelativeCanvasPosition(x, y) {
@@ -312,7 +347,9 @@ function preloadImages() {
 
 }
 
-function innerChunkPropertiesInFields(chunk) {
+function innerChunkPropertiesInFields() {
+    if (selectedChunk.length < 1) return;
+
     const idInp = document.getElementById('inp-chunk-id'),
         rotationInp = document.getElementById('inp-chunk-rotation'),
         xInp = document.getElementById('inp-chunk-x'),
@@ -321,6 +358,24 @@ function innerChunkPropertiesInFields(chunk) {
         tileInp = document.getElementById('inp-chunk-tile'),
         tileInpImg = document.getElementById('tile-preview'),
         widthInp = document.getElementById('inp-chunk-width');
+
+    if (selectedChunk.length > 1) {
+        idInp.value = `${selectedChunk.length} selected`;
+        xInp.value = 'Mixed';
+        yInp.value = 'Mixed';
+        heightInp.value = selectedChunk.every(c => c.height === selectedChunk[0].height) ? selectedChunk[0].height : 'Mixed';
+        widthInp.value = selectedChunk.every(c => c.width === selectedChunk[0].width) ? selectedChunk[0].width : 'Mixed';
+        rotationInp.value = selectedChunk.every(c => c.rotation === selectedChunk[0].rotation) ? selectedChunk[0].rotation + "°" : 'Mixed';
+        tileInp.value = selectedChunk.every(c => c.tile.map === selectedChunk[0].tile.map && c.tile.x === selectedChunk[0].tile.x && c.tile.y === selectedChunk[0].tile.y) ? `${selectedChunk[0].tile.map} [${selectedChunk[0].tile.x}:${selectedChunk[0].tile.y}]` : `Mixed`;
+        if (selectedChunk.every(c => c.tile.map === selectedChunk[0].tile.map && c.tile.x === selectedChunk[0].tile.x && c.tile.y === selectedChunk[0].tile.y)) {
+            tileInpImg.src = sprites.filter(s => s.id === selectedChunk[0].tile.map)[0].tileset.filter(t => t.x === selectedChunk[0].tile.x && t.y === selectedChunk[0].tile.y)[0].img.src
+        } else {
+            tileInpImg.removeAttribute('src');
+        }
+        return;
+    }
+
+    let chunk = selectedChunk[0];
 
     rotationInp.value = chunk.rotation + "°";
     idInp.value = chunk.id;
