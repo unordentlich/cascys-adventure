@@ -4,8 +4,8 @@ let project = {
     pixelSize: 200,
     chunks: []
 }
-let canvas;
-let ctx;
+let canvas, collisionCanvas;
+let ctx, collisionCtx;
 
 let offsetX = 0;
 let offsetY = 0;
@@ -25,12 +25,19 @@ let minZoom = 0.5;
 
 let selectedChunk = [];
 let selectedTileImage;
+let selectedTool;
 
 let images = new Map();
 
 window.addEventListener("resize", () => {
     canvas.width = canvas.parentElement.getBoundingClientRect().width;
     canvas.height = canvas.parentElement.getBoundingClientRect().height;
+
+    collisionCanvas.width = canvas.width;
+    collisionCanvas.height = canvas.height;
+
+    collisionCanvas = document.getElementById("collision-layer");
+    collisionCtx = canvas.getContext("2d");
 
     prepareCanvas();
 });
@@ -66,6 +73,12 @@ document.addEventListener("DOMContentLoaded", () => {
         canvas.width = canvas.parentElement.getBoundingClientRect().width;
         canvas.height = canvas.parentElement.getBoundingClientRect().height;
 
+        collisionCanvas = document.getElementById("collision-layer");
+        collisionCtx = canvas.getContext("2d");
+
+        collisionCanvas.width = canvas.width;
+        collisionCanvas.height = canvas.height;
+
         prepareCanvas();
 
         canvas.addEventListener("wheel", (e) => {
@@ -91,21 +104,25 @@ document.addEventListener("DOMContentLoaded", () => {
             prepareCanvas();
         });
 
-        canvas.addEventListener("mousedown", (e) => {
+        collisionCanvas.addEventListener("mousedown", (e) => {
             dragging = true;
             clicked = true;
             mouseClicked = [e.clientX, e.clientY];
         });
 
-        canvas.addEventListener("mousemove", (e) => {
+        collisionCanvas.addEventListener("mousemove", (e) => {
             if (!dragging) return;
+            if(selectedTool === 'collision') {
+                drawCollisionArea(e);
+                return;
+            }
             clicked = false;
             mouseOffsetX = lastClicked[0] + (e.clientX - mouseClicked[0]) * (zoom <= minZoom ? 2 : 1);
             mouseOffsetY = lastClicked[1] + (e.clientY - mouseClicked[1]) * (zoom <= minZoom ? 2 : 1);
             prepareCanvas();
         });
 
-        canvas.addEventListener('mouseup', (event) => {
+        collisionCanvas.addEventListener('mouseup', (event) => {
             if (clicked) {
                 clicked = false;
                 selectChunk(event);
@@ -139,6 +156,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById('btn-load-project').addEventListener('click', () => {
         loadDraftFromFile();
+    });
+
+    document.getElementById('tool-collision').addEventListener('click', () => {
+        selectTool('collision');
     });
 });
 
@@ -416,4 +437,31 @@ function getImage(sprite, degrees) {
     returnImg.src = canvas.toDataURL();
     images.set(sprite.map + "#" + sprite.sx + "#" + sprite.sy + (degrees >= 90 && degrees <= 270 ? "#" + degrees : ''), returnImg);
     return returnImg;
+}
+
+function drawCollisionArea(event) {
+    let start = toRelativeCanvasPosition(mouseClicked[0], mouseClicked[1]);
+    let currentEnd = toRelativeCanvasPosition(event.clientX, event.clientY);
+    let width = currentEnd[0] - start[0];
+    let height = currentEnd[1] - start[1];
+
+    console.log(start, width, height);
+
+    collisionCtx.restore();
+    collisionCtx.clearRect(0, 0, canvas.width, canvas.height);
+    collisionCtx.save();
+
+    collisionCtx.fillStyle = 'red';
+
+    collisionCtx.fillRect(start[0], start[1], width, height);
+}
+
+function selectTool(tool) {
+    if(selectedTool === tool) {
+        document.getElementById('tool-' + selectedTool).classList.remove('toggle');
+        selectedTool = null;
+        return;
+    }
+    selectedTool = tool;
+    document.getElementById('tool-' + selectedTool).classList.add('toggle');
 }

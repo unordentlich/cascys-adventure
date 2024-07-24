@@ -39,12 +39,17 @@
             </div>
         </div>
         <div class="flex">
-            <div class="flex-pane">
+            <div class="flex-pane" style="position: relative;">
                 <canvas id="map">
+                </canvas>
+                <canvas id="collision-layer">
                 </canvas>
                 <div class="buttons">
                     <button id="center-btn">
                         Center
+                    </button>
+                    <button id="tool-collision">
+                        <img src="../assets/icons/collision.png">
                     </button>
                 </div>
             </div>

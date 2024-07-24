@@ -12,6 +12,17 @@ body {
     height: 100%;
 }
 
+#collision-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 25;
+}
+
 .menu-bar {
     display: flex;
     justify-content: space-between;
@@ -78,23 +89,55 @@ canvas:hover {
 
 .buttons {
     position: absolute;
-    bottom: 0;
+    bottom: 20px;
+    margin: auto;
+    z-index: 50;
+    width: fit-content;
     left: 0;
+    right: 0;
     padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(22, 22, 22, 0.752);
+    padding: 7px;
+    border-radius: 5px;
+    backdrop-filter: blur(10px);
 }
 
 .buttons button {
-    background-color: rgb(249, 224, 96);
+    background-color: rgb(42, 42, 42);
     font-weight: 600;
-    padding: 10px;
     border-radius: 5px;
     border: none;
     cursor: pointer;
     transition: 500ms;
+    display: flex;
+    align-items: center;
+    height: 35px;
+    transition: 100ms;
 }
 
 .buttons button:hover {
     filter: brightness(1.2);
+}
+
+.buttons button img {
+    height: 24px;
+    filter: brightness(0.8);
+}
+
+.buttons button.toggle {
+    background-color: white;
+}
+
+.buttons button.toggle img {
+    filter: invert(1);
+}
+
+#center-btn {
+    padding: 10px;
+    background-color: rgb(249, 224, 96);
 }
 
 .field {
