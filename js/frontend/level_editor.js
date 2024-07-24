@@ -26,8 +26,9 @@ let minZoom = 0.5;
 let selectedChunk = [];
 let selectedTileImage;
 let selectedTool;
+let selectedCollision;
 
-let collisionDraft = [];
+let collisionDraft;
 
 let images = new Map();
 
@@ -130,7 +131,11 @@ document.addEventListener("DOMContentLoaded", () => {
             if (clicked) {
                 clicked = false;
                 if (selectedTool === 'collision') {
-                    deselectCollisionDrawing();
+                    if(collisionDraft) {
+                        deselectCollisionDrawing();
+                    } else {
+                        selectCollision(event);
+                    }
                     return;
                 }
                 selectChunk(event);
@@ -461,6 +466,7 @@ function drawCollisionArea(event) {
     let width = currentEnd[0] - start[0];
     let height = currentEnd[1] - start[1];
 
+    selectedCollision = null;
     loadCollisions();
 
     collisionCtx.fillStyle = 'rgba(255, 115, 115, 0.5)';
@@ -484,6 +490,8 @@ function drawCollisionArea(event) {
 }
 
 function deselectCollisionDrawing() {
+    collisionDraft = null;
+    selectedCollision = null;
     loadCollisions();
 
     document.querySelector('#collision-prompt').style.display = 'none';
@@ -509,12 +517,29 @@ function loadCollisions() {
         let collision = project.collisions[i];
 
         collisionCtx.fillStyle = 'rgba(255, 115, 115, 0.5)';
-        collisionCtx.strokeStyle = 'rgba(255, 115, 115, 1)';
-        collisionCtx.strokeWidth = 5;
+        collisionCtx.lineWidth = 5.5;
+        collisionCtx.strokeStyle = selectedCollision === collision ? 'white' : 'rgba(255, 115, 115, 1)';
 
         collisionCtx.fillRect(collision.start[0], collision.start[1], collision.width, collision.height);
         collisionCtx.strokeRect(collision.start[0], collision.start[1], collision.width, collision.height);
     }
+}
+
+function selectCollision(event) {
+    const realPosition = toRelativeCanvasPosition(collisionCanvas, collisionCtx, event.clientX, event.clientY);
+
+    let found = false;
+    project.collisions.forEach(function (element) {
+        if (realPosition[1] > element.start[1] && realPosition[1] < element.start[1] + element.height
+            && realPosition[0] > element.start[0] && realPosition[0] < element.start[0] + element.width) {
+                selectedCollision = element;
+                loadCollisions();
+                found = true;
+        }
+    });
+    if(found) return;
+    selectedCollision = null;
+    loadCollisions();
 }
 
 function selectTool(tool) {
