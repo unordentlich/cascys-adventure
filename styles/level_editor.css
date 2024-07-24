@@ -162,7 +162,7 @@ input[disabled='true'] {
 }
 
 .field.short {
-    width: 100px;   
+    width: 100px;
 }
 
 .input-integrated-buttons {
@@ -227,11 +227,61 @@ input[disabled='true'] {
     border-radius: 4px;
 }
 
+.prompt {
+    position: absolute;
+    background-color: #101010;
+    left: 0;
+    right: 0;
+    bottom: 80px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    width: 300px;
+    height: 30px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    justify-content: space-between;
+    z-index: 100;
+    -webkit-box-shadow: 0px 7px 24px 0px #000000;
+    box-shadow: 0px 7px 24px 0px #000000;
+    animation: 200ms fadeIn forwards;
+}
+
+.prompt p {
+    font-weight: 600;
+    margin: 0;
+}
+
+.prompt button {
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.prompt .confirm-btn {
+    background-color: rgb(94 175 94);
+    border: 2px solid rgb(142 196 142);
+    color: white;
+}
+
+.prompt .cancel-btn {
+    background-color: rgb(255 120 120);
+    border: 2px solid rgb(254 159 159);
+    color: white;
+}
+
 @keyframes drag-me {
-    0%, 100% {
+
+    0%,
+    100% {
         cursor: grab;
     }
-    
+
     50% {
         cursor: grabbing;
     }

@@ -36,9 +36,6 @@ window.addEventListener("resize", () => {
     collisionCanvas.width = canvas.width;
     collisionCanvas.height = canvas.height;
 
-    collisionCanvas = document.getElementById("collision-layer");
-    collisionCtx = canvas.getContext("2d");
-
     prepareCanvas();
 });
 
@@ -74,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
         canvas.height = canvas.parentElement.getBoundingClientRect().height;
 
         collisionCanvas = document.getElementById("collision-layer");
-        collisionCtx = canvas.getContext("2d");
+        collisionCtx = collisionCanvas.getContext("2d");
 
         collisionCanvas.width = canvas.width;
         collisionCanvas.height = canvas.height;
@@ -112,11 +109,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         collisionCanvas.addEventListener("mousemove", (e) => {
             if (!dragging) return;
-            if(selectedTool === 'collision') {
+            clicked = false;
+
+            if (selectedTool === 'collision') {
                 drawCollisionArea(e);
                 return;
             }
-            clicked = false;
             mouseOffsetX = lastClicked[0] + (e.clientX - mouseClicked[0]) * (zoom <= minZoom ? 2 : 1);
             mouseOffsetY = lastClicked[1] + (e.clientY - mouseClicked[1]) * (zoom <= minZoom ? 2 : 1);
             prepareCanvas();
@@ -125,6 +123,10 @@ document.addEventListener("DOMContentLoaded", () => {
         collisionCanvas.addEventListener('mouseup', (event) => {
             if (clicked) {
                 clicked = false;
+                if (selectedTool === 'collision') {
+                    deselectCollisionDrawing();
+                    return;
+                }
                 selectChunk(event);
             }
         })
@@ -134,8 +136,8 @@ document.addEventListener("DOMContentLoaded", () => {
             dragging = false;
             lastClicked = [mouseOffsetX, mouseOffsetY];
         };
-        canvas.addEventListener("mouseup", mouseUpOut);
-        canvas.addEventListener("mouseout", mouseUpOut);
+        collisionCanvas.addEventListener("mouseup", mouseUpOut);
+        collisionCanvas.addEventListener("mouseout", mouseUpOut);
 
     }, 200);
 
@@ -161,6 +163,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('tool-collision').addEventListener('click', () => {
         selectTool('collision');
     });
+
+    document.querySelector('#collision-prompt .cancel-btn').addEventListener('click', () => {
+        deselectCollisionDrawing();
+    })
 });
 
 const movementKeys = ['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'];
@@ -242,7 +248,7 @@ function prepareCanvas() {
 }
 
 function selectChunk(event) {
-    const realPosition = toRelativeCanvasPosition(event.clientX, event.clientY);
+    const realPosition = toRelativeCanvasPosition(canvas, ctx, event.clientX, event.clientY);
     project.chunks.forEach(function (element) {
         if (realPosition[1] > element.top && realPosition[1] < element.top + element.height
             && realPosition[0] > element.left && realPosition[0] < element.left + element.width) {
@@ -324,8 +330,8 @@ function rotateCurrentChunk(rotation) {
     innerChunkPropertiesInFields();
 }
 
-function toRelativeCanvasPosition(x, y) {
-    const rect = canvas.getBoundingClientRect();
+function toRelativeCanvasPosition(cv, ctx, x, y) {
+    const rect = cv.getBoundingClientRect();
     const transform = ctx.getTransform();
     const canvasX = (x - rect.left - transform.e) / transform.a;
     const canvasY = (y - rect.top - transform.f) / transform.d;
@@ -440,26 +446,43 @@ function getImage(sprite, degrees) {
 }
 
 function drawCollisionArea(event) {
-    let start = toRelativeCanvasPosition(mouseClicked[0], mouseClicked[1]);
-    let currentEnd = toRelativeCanvasPosition(event.clientX, event.clientY);
+    let start = toRelativeCanvasPosition(collisionCanvas, collisionCtx, mouseClicked[0], mouseClicked[1]);
+    let currentEnd = toRelativeCanvasPosition(collisionCanvas, collisionCtx, event.clientX, event.clientY);
     let width = currentEnd[0] - start[0];
     let height = currentEnd[1] - start[1];
 
     console.log(start, width, height);
 
     collisionCtx.restore();
-    collisionCtx.clearRect(0, 0, canvas.width, canvas.height);
+    collisionCtx.clearRect(0, 0, collisionCanvas.width, collisionCanvas.height);
     collisionCtx.save();
 
-    collisionCtx.fillStyle = 'red';
+    collisionCtx.fillStyle = 'rgba(255, 115, 115, 0.5)';
+    collisionCtx.strokeStyle = 'rgba(255, 115, 115, 1)';
+    collisionCtx.strokeWidth = 5;
 
     collisionCtx.fillRect(start[0], start[1], width, height);
+    collisionCtx.strokeRect(start[0], start[1], width, height);
+
+    var prompt = document.querySelector('#collision-prompt');
+    if (prompt.style.display === 'none')
+        prompt.style.display = 'flex';
+}
+
+function deselectCollisionDrawing() {
+    collisionCtx.restore();
+    collisionCtx.clearRect(0, 0, collisionCanvas.width, collisionCanvas.height);
+    collisionCtx.save();
+
+    document.querySelector('#collision-prompt').style.display = 'none';
 }
 
 function selectTool(tool) {
-    if(selectedTool === tool) {
+    if (selectedTool === tool) {
         document.getElementById('tool-' + selectedTool).classList.remove('toggle');
         selectedTool = null;
+
+        deselectCollisionDrawing(); //reset collision drafts if open
         return;
     }
     selectedTool = tool;
