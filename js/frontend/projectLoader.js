@@ -10,7 +10,8 @@ function saveDraftToFile(path) {
             lastUpdated: Date.now(),
             appVersion: currentVersion
         },
-        chunks: project.chunks
+        chunks: project.chunks,
+        collisions: project.collisions
     };
 
     window.electronAPI.saveGlobalFile(path[0] + '/cca-project.json', JSON.stringify(f, null, 2));

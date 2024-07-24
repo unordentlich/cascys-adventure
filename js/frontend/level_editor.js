@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
         prepareCanvas();
         loadCollisions();
 
-        canvas.addEventListener("wheel", (e) => {
+        collisionCanvas.addEventListener("wheel", (e) => {
             if (e.wheelDelta) {
                 if (e.wheelDelta > 0) {
                     if (zoom >= maxZoom) return;
@@ -91,6 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     zoom -= zoomStep;
                 }
                 prepareCanvas();
+                loadCollisions();
                 return;
             }
 
@@ -102,6 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 zoom -= zoomStep;
             }
             prepareCanvas();
+            loadCollisions();
         });
 
         collisionCanvas.addEventListener("mousedown", (e) => {
@@ -121,6 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
             mouseOffsetX = lastClicked[0] + (e.clientX - mouseClicked[0]) * (zoom <= minZoom ? 2 : 1);
             mouseOffsetY = lastClicked[1] + (e.clientY - mouseClicked[1]) * (zoom <= minZoom ? 2 : 1);
             prepareCanvas();
+            loadCollisions();
         });
 
         collisionCanvas.addEventListener('mouseup', (event) => {
@@ -497,6 +500,9 @@ function loadCollisions() {
     collisionCtx.restore();
     collisionCtx.clearRect(0, 0, collisionCanvas.width, collisionCanvas.height);
     collisionCtx.save();
+    collisionCtx.resetTransform();
+    collisionCtx.scale(zoom, zoom);
+    collisionCtx.translate(mouseOffsetX, mouseOffsetY);
     if (!project.collisions) return;
 
     for (let i = 0; i < project.collisions.length; i++) {
