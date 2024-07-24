@@ -27,6 +27,8 @@ let selectedChunk = [];
 let selectedTileImage;
 let selectedTool;
 
+let collisionDraft = [];
+
 let images = new Map();
 
 window.addEventListener("resize", () => {
@@ -77,6 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
         collisionCanvas.height = canvas.height;
 
         prepareCanvas();
+        loadCollisions();
 
         canvas.addEventListener("wheel", (e) => {
             if (e.wheelDelta) {
@@ -166,7 +169,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelector('#collision-prompt .cancel-btn').addEventListener('click', () => {
         deselectCollisionDrawing();
-    })
+    });
+
+    document.querySelector('#collision-prompt .confirm-btn').addEventListener('click', () => {
+        saveCollision();
+    });
 });
 
 const movementKeys = ['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'];
@@ -451,11 +458,7 @@ function drawCollisionArea(event) {
     let width = currentEnd[0] - start[0];
     let height = currentEnd[1] - start[1];
 
-    console.log(start, width, height);
-
-    collisionCtx.restore();
-    collisionCtx.clearRect(0, 0, collisionCanvas.width, collisionCanvas.height);
-    collisionCtx.save();
+    loadCollisions();
 
     collisionCtx.fillStyle = 'rgba(255, 115, 115, 0.5)';
     collisionCtx.strokeStyle = 'rgba(255, 115, 115, 1)';
@@ -464,17 +467,48 @@ function drawCollisionArea(event) {
     collisionCtx.fillRect(start[0], start[1], width, height);
     collisionCtx.strokeRect(start[0], start[1], width, height);
 
+    collisionDraft = {
+        start: start,
+        end: currentEnd,
+        width: width,
+        height: height
+    };
+
+
     var prompt = document.querySelector('#collision-prompt');
     if (prompt.style.display === 'none')
         prompt.style.display = 'flex';
 }
 
 function deselectCollisionDrawing() {
+    loadCollisions();
+
+    document.querySelector('#collision-prompt').style.display = 'none';
+}
+
+function saveCollision() {
+    if (!project.collisions) project.collisions = [];
+    project.collisions.push(collisionDraft);
+
+    document.querySelector('#collision-prompt').style.display = 'none';
+}
+
+function loadCollisions() {
     collisionCtx.restore();
     collisionCtx.clearRect(0, 0, collisionCanvas.width, collisionCanvas.height);
     collisionCtx.save();
+    if (!project.collisions) return;
 
-    document.querySelector('#collision-prompt').style.display = 'none';
+    for (let i = 0; i < project.collisions.length; i++) {
+        let collision = project.collisions[i];
+
+        collisionCtx.fillStyle = 'rgba(255, 115, 115, 0.5)';
+        collisionCtx.strokeStyle = 'rgba(255, 115, 115, 1)';
+        collisionCtx.strokeWidth = 5;
+
+        collisionCtx.fillRect(collision.start[0], collision.start[1], collision.width, collision.height);
+        collisionCtx.strokeRect(collision.start[0], collision.start[1], collision.width, collision.height);
+    }
 }
 
 function selectTool(tool) {
