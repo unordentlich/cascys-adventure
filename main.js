@@ -3,7 +3,7 @@ const { loadI18NFile } = require("./js/logic/i18n.js");
 const { BrowserWindow, app, ipcMain, dialog } = require("electron")
 const path = require('node:path')
 const fs = require('fs');
-const { loginDiscordRPC, updateDiscordRPC } = require("./js/logic/discordRPC.js");
+const { loginDiscordRPC, updateDiscordRPC, disconnect } = require("./js/logic/discordRPC.js");
 const { getSetting, loadFile, preCacheFiles, saveFile } = require("./dataController.js");
 
 const GAME_NAME = "Cascy's Coding Adventure";
@@ -62,7 +62,11 @@ function switchPage(event, destination) {
     win.loadFile(destination);
 
     if (destination === 'views/level_editor.html') {
-        updateDiscordRPC(Date.now(), 'Level Creator', 'Working on new CSS lessons...')
+        updateDiscordRPC({
+            text: 'Level Creator',
+            sub: 'Working on new CSS lessons...',
+            startTimestamp: Date.now()
+        })
     }
 }
 
@@ -126,6 +130,20 @@ app.whenReady().then(async () => {
             path: path,
             content: file
         }
+    });
+
+    ipcMain.on('settings-live-update', async (event, setting, newValue) => {
+        if(setting === 'general.discord_rpc') {
+            if(newValue) {
+                discordRPC = loginDiscordRPC();
+            } else {
+                disconnect();
+            }
+        }
+    });
+
+    ipcMain.on('discord-rpc-update', async (event, data) => {
+        updateDiscordRPC(data);
     })
 });
 

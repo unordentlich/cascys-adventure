@@ -78,7 +78,7 @@ function loadSettings() {
 
             var value = getSetting(element.getAttribute("key"));
             if (value) {
-                if(element.type === 'checkbox') {
+                if (element.type === 'checkbox') {
                     element.checked = value;
                 } else {
                     element.value = value;
@@ -131,6 +131,7 @@ function loadGitHubStarCount() {
 }
 
 function liveUpdate(key, newValue) {
+    console.log(key, newValue);
     switch (key) {
         case 'performance.window_mode':
             if (newValue === '2') {
@@ -144,11 +145,14 @@ function liveUpdate(key, newValue) {
         case 'general.language':
             window.electronAPI.reloadI18n();
             break;
+        case 'general.discord_rpc':
+            window.electronAPI.settingsLiveUpdate(key, newValue);
+            break;
     }
 }
 
 window.addEventListener('storage', (e) => {
-    if(e.key === 'i18n') {
+    if (e.key === 'i18n') {
         loadI18n();
     }
 })

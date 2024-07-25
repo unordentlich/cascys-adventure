@@ -12,5 +12,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   reloadI18n: () => ipcRenderer.send('reload-i18n'),
   requestPath: async () => ipcRenderer.invoke('request-path'),
   requestFile: async () => ipcRenderer.invoke('request-file'),
-  loadGlobalFile: (path) => ipcRenderer.invoke('load-global-file', path)
+  loadGlobalFile: (path) => ipcRenderer.invoke('load-global-file', path),
+  settingsLiveUpdate: (setting, newValue) => ipcRenderer.send('settings-live-update', setting, newValue),
+  updateDiscordRPC: (data) => ipcRenderer.send('discord-rpc-update', data)
 })

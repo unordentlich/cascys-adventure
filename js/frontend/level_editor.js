@@ -668,7 +668,15 @@ function createProject() {
 }
 
 function displayProjectTitle() {
+    if(!project.name) return;
+
     document.getElementById('titlebar-project-title').innerText = '• ' + project.name;
+    window.electronAPI.updateDiscordRPC({
+        title: 'Level Creator',
+        sub: `Working on a project`,
+        smallImageKey: `project-icon`,
+        smallImageText: project.name
+    })
 }
 
 const defaultTile = {
