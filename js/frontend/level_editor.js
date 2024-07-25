@@ -59,7 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             x: tile.x,
                             y: tile.y
                         });
-                    })
+                    });
+                    if(tile.title) tile.img.title = tile.title;
                     availableTiles.appendChild(tile.img);
                 }
             }

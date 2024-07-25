@@ -4,7 +4,14 @@ const sprites = [
         tiles: 5,
         pixelPerTile: 256,
         width: 2,
-        heigth: 3
+        heigth: 3,
+        titles: [
+            "Straight Path",
+            "Straight Grass Border",
+            "Water (Sea)",
+            "Grass",
+            "Straight Water Border"
+        ]
     }
 ];
 
@@ -55,6 +62,7 @@ function splitTiles(sprite) {
         if (!sprite.tileset) sprite.tileset = [];
         sprite.tileset.push({
             img: exportImage,
+            title: sprite.titles[i],
             x: sx,
             y: sy
         });
