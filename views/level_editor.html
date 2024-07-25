@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="flex">
-            <div class="flex-pane" style="position: relative;">
+            <div class="flex-pane" style="position: relative; user-select: none;">
                 <canvas id="map">
                 </canvas>
                 <canvas id="collision-layer">
@@ -57,6 +57,12 @@
                     <div style="display: flex; gap: 5px; height: 100%;">
                         <button class="cancel-btn">Cancel</button>
                         <button class="confirm-btn">Create</button>
+                    </div>
+                </div>
+                <div class="prompt" id="collision-deletion-prompt" style="display: none;">
+                    <p>Collision</p>
+                    <div style="display: flex; gap: 5px; height: 100%;">
+                        <button class="cancel-btn">Delete</button>
                     </div>
                 </div>
             </div>

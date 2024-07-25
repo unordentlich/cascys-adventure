@@ -40,6 +40,7 @@ window.addEventListener("resize", () => {
     collisionCanvas.height = canvas.height;
 
     prepareCanvas();
+    loadCollisions();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -177,6 +178,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelector('#collision-prompt .cancel-btn').addEventListener('click', () => {
         deselectCollisionDrawing();
+    });
+
+    document.querySelector('#collision-deletion-prompt .cancel-btn').addEventListener('click', () => {
+        deleteCollision();
     });
 
     document.querySelector('#collision-prompt .confirm-btn').addEventListener('click', () => {
@@ -461,6 +466,7 @@ function getImage(sprite, degrees) {
 }
 
 function drawCollisionArea(event) {
+    document.getElementById('collision-deletion-prompt').style.display = 'none';
     let start = toRelativeCanvasPosition(collisionCanvas, collisionCtx, mouseClicked[0], mouseClicked[1]);
     let currentEnd = toRelativeCanvasPosition(collisionCanvas, collisionCtx, event.clientX, event.clientY);
     let width = currentEnd[0] - start[0];
@@ -535,9 +541,22 @@ function selectCollision(event) {
                 selectedCollision = element;
                 loadCollisions();
                 found = true;
+
+                document.getElementById('collision-deletion-prompt').style.display = 'flex';
         }
     });
     if(found) return;
+    selectedCollision = null;
+    loadCollisions();
+    document.getElementById('collision-deletion-prompt').style.display = 'none';
+}
+
+function deleteCollision() {
+    if(!selectedCollision) return;
+    let selInd = project.collisions.indexOf(selectedCollision);
+    project.collisions.splice(selInd, 1);
+
+    document.getElementById('collision-deletion-prompt').style.display = 'none';
     selectedCollision = null;
     loadCollisions();
 }
@@ -548,6 +567,7 @@ function selectTool(tool) {
         selectedTool = null;
 
         deselectCollisionDrawing(); //reset collision drafts if open
+        document.getElementById('collision-deletion-prompt').style.display = 'none';
         return;
     }
     selectedTool = tool;
