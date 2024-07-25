@@ -296,6 +296,18 @@ input[disabled='true'] {
     gap: 3px;
 }
 
+.btn {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+    border: 3px solid rgb(74, 74, 74);
+    background-color: rgb(45, 45, 45);
+    cursor: pointer;
+}
+
 @keyframes drag-me {
 
     0%,

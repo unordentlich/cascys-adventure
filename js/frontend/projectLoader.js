@@ -18,10 +18,15 @@ function saveDraftToFile(path) {
 }
 
 function loadDraftFromFile() {
-    var recentProjects = localStorage.getItem('recent-draft-projects') || [];
+    var recentProjects = localStorage.getItem('recent-draft-projects') ? JSON.parse(localStorage.getItem('recent-draft-projects')) : [];
     if(recentProjects.length >= 5) recentProjects.slice(0,4);
     window.electronAPI.requestFile().then((file) => {
-        if(!recentProjects.includes(file.path)) recentProjects.push(file.path);
+        if(!recentProjects.includes(file.path)) {
+            recentProjects.unshift(file.path);
+        } else {
+            recentProjects.unshift(recentProjects.splice(recentProjects.indexOf(file.path), 1)[0]);   
+        }
+        localStorage.setItem('recent-draft-projects', JSON.stringify(recentProjects));
 
         loadProject(file.content);
     })
