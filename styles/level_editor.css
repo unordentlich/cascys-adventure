@@ -308,6 +308,90 @@ input[disabled='true'] {
     cursor: pointer;
 }
 
+.primary.btn {
+    border: 3px solid rgb(255, 230, 65);
+    background-color: rgb(230, 199, 0);
+    color: black;
+}
+
+.context-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background-color: rgb(23, 23, 23);
+    border-radius: 5px;
+    border: 3px solid rgb(32, 32, 32);
+    padding: 10px;
+    display: none;
+    animation: 100ms fadeIn forwards;
+}
+
+.context-menu ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.context-menu li {
+    min-width: 150px;
+    font-size: 12px;
+    background-color: rgb(32, 32, 32);
+    border-radius: 3px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.context-menu li:hover {
+    filter: brightness(1.2);
+}
+
+#project-creation .container {
+    width: 1000px;
+    height: 280px;
+}
+
+.popup .container {
+    border-radius: 10px;
+    background-color: rgb(47, 47, 47);
+    border: 3px solid rgb(73, 73, 73);
+    padding: 40px 50px;
+    display: flex;
+    flex-direction: column;
+}
+
+.popup {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    z-index: 500;
+    backdrop-filter: blur(10px) brightness(0.5);
+    animation: 500ms fadeIn forwards;
+}
+
+.popup .container h4 {
+    margin: 0 0 15px 0;
+}
+
+.popup .container .configuration-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: auto auto auto;
+}
+
+.popup .container .configuration-grid .field input {
+    padding: 10px;
+    font-weight: 500;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: 2px solid rgb(59, 59, 59);
+}
+
 @keyframes drag-me {
 
     0%,

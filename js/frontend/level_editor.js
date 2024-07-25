@@ -163,15 +163,23 @@ document.addEventListener("DOMContentLoaded", () => {
         window.electronAPI.switchPage('views/main_menu.html');
     });
 
-    document.getElementById('btn-save-project').addEventListener('click', () => {
-        window.electronAPI.requestPath().then((path) => {
-            saveDraftToFile(path);
-        });
+    document.getElementById('btn-save-or-create-project').addEventListener('click', () => {
+        if(project.chunks.length > 0) {
+            window.electronAPI.requestPath().then((path) => {
+                saveDraftToFile(path);
+            });
+        } else {
+            createProjectPopup();
+        }
     });
 
     document.getElementById('btn-load-project').addEventListener('click', () => {
-        loadDraftFromFile();
+        requestDraftFromFile();
     });
+
+    document.getElementById('btn-load-project').addEventListener('contextmenu', (event) => {
+        showRecentsContextMenu(event.clientX, event.clientY);
+    })
 
     document.getElementById('tool-collision').addEventListener('click', () => {
         selectTool('collision');
@@ -187,6 +195,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelector('#collision-prompt .confirm-btn').addEventListener('click', () => {
         saveCollision();
+    });
+
+    document.querySelector('#project-creation button[action="cancel"]').addEventListener('click', () => {
+        hideProjectPopup();
+    });
+
+    document.querySelector('#project-creation button[action="create"]').addEventListener('click', () => {
+        createProject();
     });
 
     var layerInputs = document.querySelectorAll(".layer-options input[type='checkbox']");
@@ -585,4 +601,30 @@ function selectTool(tool) {
     }
     selectedTool = tool;
     document.getElementById('tool-' + selectedTool).classList.add('toggle');
+}
+
+function createProjectPopup() {
+    document.getElementById('project-creation').style.display = 'flex';
+}
+
+function hideProjectPopup() {
+    console.log('boo');
+    document.getElementById('project-creation').style.display = 'none';
+}
+
+function createProject() {
+    let title = document.getElementById('creation-inp-title').value,
+        translationKey = document.getElementById('creation-inp-translation-key').value,
+        previewImg = document.getElementById('creation-inp-preview-img'),
+        width = document.getElementById('creation-inp-width'),
+        height = document.getElementById('creation-inp-height'),
+        pixel = document.getElementById('creation-inp-pixelsize');
+
+    if(!title || !translationKey || !previewImg || !width || !height || !pixel) {
+        alert("You haven't configured all fields correctly!")
+        return;
+    }
+
+
+
 }

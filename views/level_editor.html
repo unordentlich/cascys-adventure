@@ -133,9 +133,52 @@
             </div>
             <div class="flex-pane">
                 <div class="dual" style="margin-top: auto; padding: 20px;">
-                    <button id="btn-save-project" class="btn">Save current Project</button>
+                    <button id="btn-save-or-create-project" class="btn">Create Project</button>
                     <button id="btn-load-project" class="btn">Load Project</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="context-menu" id="context">
+        <ul>
+            <li>List Item 1</li>
+            <li>List Item 2</li>
+        </ul>
+    </div>
+
+    <div class="popup" id="project-creation">
+        <div class="container">
+            <h4>Create a new project</h5>
+            <div class="configuration-grid">
+                <div class="field">
+                    <label class="key">Title:</label>
+                    <input placeholder="The Jungle of alignement" id="creation-inp-title">
+                </div>
+                <div class="field">
+                    <label class="key">Translation Key:</label>
+                    <input placeholder="jungle-of-alignment" id="creation-inp-translation-key">
+                </div>
+                <div class="field">
+                    <label class="key">Preview Image:</label>
+                    <input placeholder="/assets/levels/jungle-of-alignment.png" id="creation-inp-preview-img">
+                </div>
+                <div class="field">
+                    <label class="key">Width:</label>
+                    <input type="number" min="1" placeholder="32" id="creation-inp-width">
+                </div>
+                <div class="field">
+                    <label class="key">Height:</label>
+                    <input type="number" min="1" placeholder="32" id="creation-inp-height">
+                </div>
+                <div class="field">
+                    <label class="key">Pixelsize:</label>
+                    <input type="number" min="1" placeholder="200" value="200" id="creation-inp-pixelsize">
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; margin: auto; margin-right: 0; ">
+                <button class="btn" action="cancel">Cancel</button>
+                <button class="primary btn" action="create">Create</button>
             </div>
         </div>
     </div>
