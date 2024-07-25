@@ -119,6 +119,14 @@ app.whenReady().then(async () => {
             content: file
         };
     });
+
+    ipcMain.handle('load-global-file', async (event, path) => {
+        var file = await(loadFile(event, path, true));
+        return {
+            path: path,
+            content: file
+        }
+    })
 });
 
 try {

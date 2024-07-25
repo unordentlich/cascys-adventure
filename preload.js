@@ -11,5 +11,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getInformation: () => ipcRenderer.invoke('information'),
   reloadI18n: () => ipcRenderer.send('reload-i18n'),
   requestPath: async () => ipcRenderer.invoke('request-path'),
-  requestFile: async () => ipcRenderer.invoke('request-file')
+  requestFile: async () => ipcRenderer.invoke('request-file'),
+  loadGlobalFile: (path) => ipcRenderer.invoke('load-global-file', path)
 })
