@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     setTimeout(() => {
-        canvas = document.getElementById("map");
+        canvas = document.getElementById("map-layer");
         ctx = canvas.getContext("2d");
 
         canvas.width = canvas.parentElement.getBoundingClientRect().width;
@@ -187,6 +187,18 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector('#collision-prompt .confirm-btn').addEventListener('click', () => {
         saveCollision();
     });
+
+    var layerInputs = document.querySelectorAll(".layer-options input[type='checkbox']");
+    for(let i = 0; i < layerInputs.length; i++) {
+        layerInputs[i].addEventListener('change', (event) => {
+            let id = layerInputs[i].id.replace('-input', '');
+            if(layerInputs[i].checked) {
+                document.getElementById(id).style.display = 'block';
+            } else {
+                document.getElementById(id).style.display = 'none';
+            }
+        })
+    }
 });
 
 const movementKeys = ['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'];

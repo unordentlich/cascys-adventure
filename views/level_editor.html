@@ -40,7 +40,7 @@
         </div>
         <div class="flex">
             <div class="flex-pane" style="position: relative; user-select: none;">
-                <canvas id="map">
+                <canvas id="map-layer">
                 </canvas>
                 <canvas id="collision-layer">
                 </canvas>
@@ -115,6 +115,19 @@
                 <div style="margin-top: auto;">
                     <label class="key">Tileset:</label>
                     <div class="tileset" id="available-tiles">
+                    </div>
+                </div>
+                <div style="margin-top: 5px;">
+                    <label class="key">Layer:</label>
+                    <div class="layer-options">
+                        <div>
+                            <input type="checkbox" id="map-layer-input" checked="true">
+                            <label for="map-layer-input">Map</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="collision-layer-input" checked="true">
+                            <label for="collision-layer-input">Collision</label>
+                        </div>
                     </div>
                 </div>
             </div>

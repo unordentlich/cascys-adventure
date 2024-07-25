@@ -275,6 +275,27 @@ input[disabled='true'] {
     color: white;
 }
 
+.layer-options {
+    display: flex;
+    gap: 10px;
+}
+
+.layer-options label {
+    font-size: 13px;
+    font-family: monospace;
+    color:  rgb(207, 207, 207);
+}
+
+.layer-options input {
+    filter: grayscale(1) invert(1);
+}
+
+.layer-options div {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
 @keyframes drag-me {
 
     0%,
