@@ -282,7 +282,7 @@ input[disabled='true'] {
 
 .layer-options label {
     font-size: 13px;
-    font-family: monospace;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color:  rgb(207, 207, 207);
 }
 

@@ -13,6 +13,7 @@ let offsetY = 0;
 let dragging = false;
 let clicked = false;
 let ctrlPressed = false;
+let altPressed = false;
 let mouseClicked = [];
 let lastClicked = [0, 0];
 let mouseOffsetX = 50;
@@ -60,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             y: tile.y
                         });
                     });
-                    if(tile.title) tile.img.title = tile.title;
+                    if (tile.title) tile.img.title = tile.title;
                     availableTiles.appendChild(tile.img);
                 }
             }
@@ -133,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (clicked) {
                 clicked = false;
                 if (selectedTool === 'collision') {
-                    if(collisionDraft) {
+                    if (collisionDraft) {
                         deselectCollisionDrawing();
                     } else {
                         selectCollision(event);
@@ -164,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.getElementById('btn-save-or-create-project').addEventListener('click', () => {
-        if(project.chunks.length > 0) {
+        if (project.chunks.length > 0) {
             window.electronAPI.requestPath().then((path) => {
                 saveDraftToFile(path);
             });
@@ -206,10 +207,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     var layerInputs = document.querySelectorAll(".layer-options input[type='checkbox']");
-    for(let i = 0; i < layerInputs.length; i++) {
+    for (let i = 0; i < layerInputs.length; i++) {
         layerInputs[i].addEventListener('change', (event) => {
             let id = layerInputs[i].id.replace('-input', '');
-            if(layerInputs[i].checked) {
+            if (layerInputs[i].checked) {
                 document.getElementById(id).style.display = 'block';
             } else {
                 document.getElementById(id).style.display = 'none';
@@ -223,7 +224,13 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Control') {
         ctrlPressed = true;
     }
+
+    if (e.key === 'Alt') {
+        altPressed = true;
+        prepareCanvas();
+    }
     if (!movementKeys.includes(e.key)) return;
+    if(document.getElementById('project-creation').style.display !== 'none') return;
     if (e.key === 'w' || e.key === 'ArrowUp') {
         offsetY += 1;
     } else if (e.key === 's' || e.key === 'ArrowDown') {
@@ -241,12 +248,17 @@ document.addEventListener('keyup', (e) => {
     if (e.key === 'Control') {
         ctrlPressed = false;
     }
+    if(e.key === 'Alt') {
+        altPressed = false;
+        prepareCanvas();
+    }
 })
 
 function loadProject(pJson) {
     project = JSON.parse(pJson);
 
     prepareCanvas();
+    displayProjectTitle();
 }
 
 function prepareCanvas() {
@@ -261,11 +273,14 @@ function prepareCanvas() {
         alert('Warning! Map file is corrupted. Expected chunk amount: ' + project.height * project.width + ' -> Actual amount: ' + project.chunks.length);
     }
 
+
     let xPos = 0 + (offsetX * project.pixelSize);
     let yPos = 0 + (offsetY * project.pixelSize);
 
+    ctx.font = "30px Arial";
     for (let i = 0; i < project.height * project.width; i++) {
         const chunk = project.chunks[i];
+
         if (xPos >= project.width * project.pixelSize + offsetX * project.pixelSize) {
             xPos = 0 + (offsetX * project.pixelSize);
             yPos += project.pixelSize;
@@ -286,8 +301,7 @@ function prepareCanvas() {
             ctx.strokeStyle = "black";
         }
 
-        ctx.font = "30px Arial";
-        ctx.fillText(i, xPos + project.pixelSize / 2 - 10, yPos + project.pixelSize / 2);
+        if(altPressed) ctx.fillText(i, xPos + project.pixelSize / 2 - 10, yPos + project.pixelSize / 2);
 
         ctx.stroke();
         ctx.fillStyle = "black";
@@ -567,21 +581,21 @@ function selectCollision(event) {
     project.collisions.forEach(function (element) {
         if (realPosition[1] > element.start[1] && realPosition[1] < element.start[1] + element.height
             && realPosition[0] > element.start[0] && realPosition[0] < element.start[0] + element.width) {
-                selectedCollision = element;
-                loadCollisions();
-                found = true;
+            selectedCollision = element;
+            loadCollisions();
+            found = true;
 
-                document.getElementById('collision-deletion-prompt').style.display = 'flex';
+            document.getElementById('collision-deletion-prompt').style.display = 'flex';
         }
     });
-    if(found) return;
+    if (found) return;
     selectedCollision = null;
     loadCollisions();
     document.getElementById('collision-deletion-prompt').style.display = 'none';
 }
 
 function deleteCollision() {
-    if(!selectedCollision) return;
+    if (!selectedCollision) return;
     let selInd = project.collisions.indexOf(selectedCollision);
     project.collisions.splice(selInd, 1);
 
@@ -608,23 +622,57 @@ function createProjectPopup() {
 }
 
 function hideProjectPopup() {
-    console.log('boo');
     document.getElementById('project-creation').style.display = 'none';
 }
 
 function createProject() {
     let title = document.getElementById('creation-inp-title').value,
         translationKey = document.getElementById('creation-inp-translation-key').value,
-        previewImg = document.getElementById('creation-inp-preview-img'),
-        width = document.getElementById('creation-inp-width'),
-        height = document.getElementById('creation-inp-height'),
-        pixel = document.getElementById('creation-inp-pixelsize');
+        previewImg = document.getElementById('creation-inp-preview-img').value,
+        width = document.getElementById('creation-inp-width').value,
+        height = document.getElementById('creation-inp-height').value,
+        pixel = document.getElementById('creation-inp-pixelsize').value;
 
-    if(!title || !translationKey || !previewImg || !width || !height || !pixel) {
+    if (!title || !translationKey || !previewImg || !width || !height || !pixel) {
         alert("You haven't configured all fields correctly!")
         return;
     }
 
+    project.height = parseInt(height);
+    project.width = parseInt(width);
+    project.pixelSize = parseInt(pixel);
+    project.name = title;
+    project.translationKey = translationKey;
 
+    let x = 0, y = 0;
+    for (let i = 0; i < project.width * project.height; i++) {
+        if (x >= project.width) {
+            x = 0;
+            y++;
+        }
+        project.chunks.push({
+            top: y * project.pixelSize,
+            left: x * project.pixelSize,
+            id: i,
+            height: parseInt(project.pixelSize),
+            width: parseInt(project.pixelSize),
+            rotation: 0,
+            tile: defaultTile,
+        });
+        x++;
+    }
 
+    hideProjectPopup();
+    displayProjectTitle();
+    prepareCanvas();
+}
+
+function displayProjectTitle() {
+    document.getElementById('titlebar-project-title').innerText = '• ' + project.name;
+}
+
+const defaultTile = {
+    map: 'map_basic',
+    x: 1,
+    y: 1
 }

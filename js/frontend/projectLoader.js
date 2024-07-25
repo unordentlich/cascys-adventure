@@ -4,7 +4,7 @@ function saveDraftToFile(path) {
         width: project.width,
         pixelSize: project.pixelSize,
         metadata: {
-            name: 'Test project',
+            name: project.name,
             draft: true,
             created: Date.now(),
             lastUpdated: Date.now(),
@@ -13,6 +13,7 @@ function saveDraftToFile(path) {
         chunks: project.chunks,
         collisions: project.collisions
     };
+    if(project.translationKey) f.metadata.translationKey = project.translationKey;
 
     window.electronAPI.saveGlobalFile(path[0] + '/cca-project.json', JSON.stringify(f, null, 2));
 }
