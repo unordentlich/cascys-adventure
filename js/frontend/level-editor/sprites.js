@@ -1,15 +1,20 @@
 const sprites = [
     {
-        id: "map_basic",
-        tiles: 5,
-        pixelPerTile: 256,
-        width: 2,
-        heigth: 3,
+        id: "map_tiles_wip",
+        tiles: 10,
+        pixelPerTile: 224,
+        width: 3,
+        heigth: 4,
         titles: [
-            "Straight Path",
-            "Straight Grass Border",
-            "Water (Sea)",
+            "Path crossing",
+            "Path Curve",
+            "Path dead end",
+            "Path straight",
+            "Path small straight",
+            "Grass Border",
+            "Water",
             "Grass",
+            "Grass with Flowers",
             "Straight Water Border"
         ]
     }

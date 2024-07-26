@@ -410,21 +410,21 @@ function resetCanvasView() {
 }
 
 function selectSprite(id, x, y) {
-    const pixelPerSlot = 256;
 
+    var spriteFromArray = sprites.filter(s => s.id === id)[0]; 
     return {
         image: images.get(id),
         map: id,
-        swidth: pixelPerSlot,
-        sheight: pixelPerSlot,
-        sx: x * pixelPerSlot,
-        sy: y * pixelPerSlot,
+        swidth: spriteFromArray.pixelPerTile,
+        sheight: spriteFromArray.pixelPerTile,
+        sx: x * spriteFromArray.pixelPerTile,
+        sy: y * spriteFromArray.pixelPerTile,
     }
 }
 
 function preloadImages() {
-    const maps = ["map_basic"]
-    maps.forEach(map => {
+    sprites.forEach(sprite => {
+        const map = sprite.id
         window.electronAPI.requestAsset(`/assets/sprites/${map}.png`).then((base64Image) => {
             if (!base64Image) alert("Image not found!");
             console.log(base64Image);
@@ -680,7 +680,7 @@ function displayProjectTitle() {
 }
 
 const defaultTile = {
-    map: 'map_basic',
-    x: 1,
-    y: 1
+    map: 'map_tiles_wip',
+    x: 0,
+    y: 2
 }
