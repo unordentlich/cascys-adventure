@@ -33,3 +33,14 @@ The mouse wheel can also be used to zoom in and out.
 
 > **Note**: If you experience poor performance when moving the mouse, try zooming in as close as possible. This will render less content in the visible field and speed up the process. In addition, navigation using arrow keys can be significantly more performant, as only one calculation takes place per keystroke, not several times per second as with a mouse movement. 
 
+##### Center Tool
+The map field in the editor is deliberately not limited. It is therefore possible to leave the map area and not find it again. The 'Center' button in the toolbar returns the view to its initial position in the top left corner of the map.
+
+##### Collision Tool
+So that the player's later character cannot pass solid objects or leave the map, there are so-called *collision zones* which the character cannot enter. These can be drawn in the editor using the tool in the lower toolbar.
+
+As soon as the mode is active, new areas can be drawn in. Existing ones can already be seen on the map.
+
+![Collisions Demonstration](../.assets/level_editor_collisions.gif)
+
+---
