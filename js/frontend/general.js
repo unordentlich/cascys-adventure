@@ -1,5 +1,6 @@
 const supportedLanguages = ['de', 'en'];
 let settings;
+let soundLock = false;
 let currentVersion = localStorage.getItem('version');
 const githubRepoUrl = "https://api.github.com/repos/unordentlich/streamchat";
 
@@ -8,6 +9,18 @@ document.addEventListener("DOMContentLoaded", () => {
     getInformationFromController();
     hideTaskbarOnFullscreen();
     loadI18n();
+
+    let buttons = document.getElementsByTagName('button');
+    for(let i=0; i < buttons.length; i++) {
+        buttons[i].addEventListener('mouseover', () => {
+            if(soundLock) return;
+            playSoundEffect('button_hover');
+            soundLock = true;
+        });
+        buttons[i].addEventListener('mouseleave', () => {
+            soundLock = false;
+        })
+    }
 })
 
 window.addEventListener("load", () => {
@@ -144,3 +157,4 @@ function getSetting(key, fallback) {
     }
     return current[keys[keys.length - 1]];
 }
+

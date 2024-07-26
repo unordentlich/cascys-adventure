@@ -38,7 +38,7 @@ const showIntro = async () => {
         return { action: "deny" };
     });
 
-    win.loadFile("views/intro/logo.html"); 
+    win.loadFile("views/logo.html"); 
     //win.loadFile("views/main_menu.html");DEACTIVATED FOR DEBUG ONLY
 
     ipcMain.on('toggle-fullscreen', (event, mode) => {
