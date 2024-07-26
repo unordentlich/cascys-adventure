@@ -1,10 +1,10 @@
 const sprites = [
     {
         id: "map_tiles_wip",
-        tiles: 10,
+        tiles: 18,
         pixelPerTile: 224,
-        width: 3,
-        heigth: 4,
+        width: 4,
+        heigth: 5,
         titles: [
             "Path crossing",
             "Path Curve",
