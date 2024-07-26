@@ -33,6 +33,8 @@ let collisionDraft;
 
 let images = new Map();
 
+let lastChanges = [];
+
 window.addEventListener("resize", () => {
     canvas.width = canvas.parentElement.getBoundingClientRect().width;
     canvas.height = canvas.parentElement.getBoundingClientRect().height;
@@ -229,6 +231,19 @@ document.addEventListener('keydown', (e) => {
         altPressed = true;
         prepareCanvas();
     }
+    
+    if(e.key === 'a' && ctrlPressed) {
+        selectedChunk = project.chunks;
+
+        prepareCanvas();
+        innerChunkPropertiesInFields();
+        return;
+    }
+
+    if(e.key === 'z' && ctrlPressed) {
+        undo();
+        return;
+    }
     if (!movementKeys.includes(e.key)) return;
     if(document.getElementById('project-creation').style.display !== 'none') return;
     if (e.key === 'w' || e.key === 'ArrowUp') {
@@ -344,17 +359,20 @@ function selectChunk(event) {
 function changeChunkTile(tile) {
     if (selectedChunk.length < 1 || (selectedChunk.length === 1 && !selectedTileImage)) return;
 
+    var changesList = [];
     for (let i = 0; i < selectedChunk.length; i++) {
         let chunk = selectedChunk[i];
+        changesList.push(chunk.tile);
         chunk.tile = {
-            map: (selectedTileImage ? selectedTileImage.map : tile.map),
-            x: (selectedTileImage ? selectedTileImage.x : tile.x),
-            y: (selectedTileImage ? selectedTileImage.y : tile.y)
+            map: (!tile ? selectedTileImage.map : tile.map),
+            x: (!tile ? selectedTileImage.x : tile.x),
+            y: (!tile ? selectedTileImage.y : tile.y)
         };
     }
 
     prepareCanvas();
     innerChunkPropertiesInFields();
+    bookChange('change-chunk-tile', selectedChunk, changesList);
 }
 
 function selectTileImage(metadata) {
@@ -677,6 +695,29 @@ function displayProjectTitle() {
         smallImageKey: `project-icon`,
         smallImageText: project.name
     })
+}
+
+function bookChange(change, field, oldValue) {
+    if(lastChanges.length >= 50) {
+        lastChanges.pop();
+    }
+
+    lastChanges.unshift({
+        change: change,
+        field: field,
+        value: oldValue
+    });
+}
+
+function undo() {
+    let change = lastChanges.shift();
+
+    if(change.change === 'change-chunk-tile') {
+        for(let i = 0; i < change.field.length; i++) {
+            selectedChunk = [change.field[i]];
+            changeChunkTile(change.value[i]);
+        }
+    }
 }
 
 const defaultTile = {
