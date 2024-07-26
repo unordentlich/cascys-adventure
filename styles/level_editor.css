@@ -192,7 +192,7 @@ input[disabled='true'] {
     display: grid;
     gap: 20px;
     width: 100%;
-    grid-template-columns: auto auto auto auto auto;
+    grid-template-columns: auto auto auto auto auto auto;
 }
 
 .tileset img {

@@ -1,5 +1,3 @@
-let settings;
-
 document.addEventListener("DOMContentLoaded", () => {
     loadSettings();
     switchTab('performance');

@@ -1,8 +1,10 @@
 const supportedLanguages = ['de', 'en'];
+let settings;
 let currentVersion = localStorage.getItem('version');
 const githubRepoUrl = "https://api.github.com/repos/unordentlich/streamchat";
 
 document.addEventListener("DOMContentLoaded", () => {
+    loadSettingsFromFile();
     getInformationFromController();
     hideTaskbarOnFullscreen();
     loadI18n();
@@ -116,4 +118,29 @@ function loadGitHubChangelog() {
     };
     xhr.send();
     return [];
+}
+
+function loadSettingsFromFile() {
+    window.electronAPI.loadFile('settings.json').then((f) => {
+        settings = f;
+        try {
+            settings = JSON.parse(settings);
+        } catch (e) {
+            settings = {};
+        }
+    });
+}
+
+function getSetting(key, fallback) {
+    const keys = key.split('.');
+    let current = settings;
+    console.log(settings);
+
+    for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) {
+            current[keys[i]] = {};
+        }
+        current = current[keys[i]];
+    }
+    return current[keys[keys.length - 1]];
 }

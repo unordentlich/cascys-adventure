@@ -19,7 +19,7 @@ body {
     align-items: center;
     opacity: 0;
 
-    animation: 8s fade-in forwards 2.5s;
+    animation: 6s fade-in forwards 2.5s;
 }
 
 .author-container {
@@ -35,7 +35,7 @@ body {
     gap: 20px;
     opacity: 0;
 
-    animation: 8s fade-in forwards 13.5s;
+    animation: 6s fade-in forwards 11.5s;
 }
 
 .logo-container img {

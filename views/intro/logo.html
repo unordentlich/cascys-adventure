@@ -5,10 +5,14 @@
     <link href="../../styles/general.css" rel="stylesheet">
     <link href="../../styles/intro.css" rel="stylesheet">
 
+    <script src="../../js/frontend/general.js"></script>
+    <script src="../../js/frontend/soundManager.js"></script>
+    <script src="../../js/frontend/intro.js"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("last").addEventListener("animationend", () => {
-                window.electronAPI.leaveIntro();
+                window.electronAPI.switchPage('views/main_menu.html');
             });
         })
     </script>
@@ -19,7 +23,7 @@
         <div></div>
     </div>
     <div class="body">
-        <div class="logo-container">
+        <div class="logo-container" id="logo">
             <img src="../../assets/logo.png">
             <div>
                 <h1>Cascy's Coding Adventure</h1>

@@ -14,6 +14,7 @@ let dragging = false;
 let clicked = false;
 let ctrlPressed = false;
 let altPressed = false;
+let shiftPressed = false;
 let mouseClicked = [];
 let lastClicked = [0, 0];
 let mouseOffsetX = 50;
@@ -231,8 +232,8 @@ document.addEventListener('keydown', (e) => {
         altPressed = true;
         prepareCanvas();
     }
-    
-    if(e.key === 'a' && ctrlPressed) {
+
+    if (e.key === 'a' && ctrlPressed) {
         selectedChunk = project.chunks;
 
         prepareCanvas();
@@ -240,12 +241,16 @@ document.addEventListener('keydown', (e) => {
         return;
     }
 
-    if(e.key === 'z' && ctrlPressed) {
+    if (e.key === 'z' && ctrlPressed) {
         undo();
         return;
     }
+
+    if (e.key === 'Shift') {
+        shiftPressed = true;
+    }
     if (!movementKeys.includes(e.key)) return;
-    if(document.getElementById('project-creation').style.display !== 'none') return;
+    if (document.getElementById('project-creation').style.display !== 'none') return;
     if (e.key === 'w' || e.key === 'ArrowUp') {
         offsetY += 1;
     } else if (e.key === 's' || e.key === 'ArrowDown') {
@@ -263,9 +268,12 @@ document.addEventListener('keyup', (e) => {
     if (e.key === 'Control') {
         ctrlPressed = false;
     }
-    if(e.key === 'Alt') {
+    if (e.key === 'Alt') {
         altPressed = false;
         prepareCanvas();
+    }
+    if (e.key === 'Shift') {
+        shiftPressed = false;
     }
 })
 
@@ -316,7 +324,7 @@ function prepareCanvas() {
             ctx.strokeStyle = "black";
         }
 
-        if(altPressed) ctx.fillText(i, xPos + project.pixelSize / 2 - 10, yPos + project.pixelSize / 2);
+        if (altPressed) ctx.fillText(i, xPos + project.pixelSize / 2 - 10, yPos + project.pixelSize / 2);
 
         ctx.stroke();
         ctx.fillStyle = "black";
@@ -331,7 +339,18 @@ function selectChunk(event) {
         if (realPosition[1] > element.top && realPosition[1] < element.top + element.height
             && realPosition[0] > element.left && realPosition[0] < element.left + element.width) {
 
-            if (ctrlPressed) {
+            if (shiftPressed) {
+                if (selectedChunk.length < 1) {
+                    selectedChunk = [element];
+                } else {
+                    var lastSelection = selectedChunk.pop();
+                    var start = lastSelection.top > element.top || lastSelection.left < element.top ? lastSelection : element;
+                    var end = start === lastSelection ? element : lastSelection;
+                    var selection = project.chunks.filter(c => c.top >= start.top && c.top <= end.top && c.left >= start.left && c.left <= end.left);
+
+                    selectedChunk = selection;
+                }
+            } else if (ctrlPressed) {
                 if (selectedChunk.includes(element)) {
                     if (selectedChunk.indexOf(element) === 0) {
                         selectedChunk.shift();
@@ -342,16 +361,14 @@ function selectChunk(event) {
                     selectedChunk.push(element);
                 }
             } else {
-                selectedChunk = [];
-                selectedChunk[0] = element;
+                selectedChunk = [element];
+                if (selectedTileImage) {
+                    changeChunkTile();
+                }
             }
 
             prepareCanvas();
             innerChunkPropertiesInFields();
-
-            if (selectedTileImage) {
-                changeChunkTile();
-            }
         }
     });
 }
@@ -429,7 +446,7 @@ function resetCanvasView() {
 
 function selectSprite(id, x, y) {
 
-    var spriteFromArray = sprites.filter(s => s.id === id)[0]; 
+    var spriteFromArray = sprites.filter(s => s.id === id)[0];
     return {
         image: images.get(id),
         map: id,
@@ -686,7 +703,7 @@ function createProject() {
 }
 
 function displayProjectTitle() {
-    if(!project.name) return;
+    if (!project.name) return;
 
     document.getElementById('titlebar-project-title').innerText = '• ' + project.name;
     window.electronAPI.updateDiscordRPC({
@@ -698,7 +715,7 @@ function displayProjectTitle() {
 }
 
 function bookChange(change, field, oldValue) {
-    if(lastChanges.length >= 50) {
+    if (lastChanges.length >= 50) {
         lastChanges.pop();
     }
 
@@ -712,8 +729,8 @@ function bookChange(change, field, oldValue) {
 function undo() {
     let change = lastChanges.shift();
 
-    if(change.change === 'change-chunk-tile') {
-        for(let i = 0; i < change.field.length; i++) {
+    if (change.change === 'change-chunk-tile') {
+        for (let i = 0; i < change.field.length; i++) {
             selectedChunk = [change.field[i]];
             changeChunkTile(change.value[i]);
         }
