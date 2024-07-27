@@ -1,5 +1,6 @@
 const supportedLanguages = ['de', 'en'];
 let settings;
+let currentLevel = localStorage.getItem('level') || 0;
 let soundLock = false;
 let currentVersion = localStorage.getItem('version');
 const githubRepoUrl = "https://api.github.com/repos/unordentlich/streamchat";

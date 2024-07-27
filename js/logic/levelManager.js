@@ -1,7 +1,11 @@
-const { app } = require('electron');
+const { app, ipcMain } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const levels = [];
+
+ipcMain.handle('level-list', (extended = false) => {
+    return levels;
+})
 
 function loadLevels() {
     var dirname = path.join(app.getPath('userData'), 'levels');
@@ -9,15 +13,20 @@ function loadLevels() {
         if (err) {
             return;
         }
-        console.log(filenames);
         filenames.forEach(function (filename) {
-            if (!filename.endsWith('.txt')) return;
+            if (!filename.endsWith('.json')) return;
             fs.readFile(path.join(dirname, filename), 'utf-8', function (err, content) {
                 if (err) {
                     console.error(err);
                     return;
                 }
-                console.log(filename, content);
+
+                var json = JSON.parse(content);
+                levels.push({
+                    name: json.name,
+                    translation: json.translation,
+                    creation: json.creation
+                });
             });
         });
     });

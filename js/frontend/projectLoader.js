@@ -96,7 +96,7 @@ function exportProject() {
     prepareCanvas(true);
     var a = document.createElement("a");
     a.href = canvas.toDataURL();
-    a.download = "Image.png";
+    a.download = "level.png";
     a.click();
 
     const f = {
@@ -105,6 +105,10 @@ function exportProject() {
         creation: Date.now(),
         collisions: project.collisions
     }
+    var a1 = document.createElement("a");
+    a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(f));
+    a.download = 'level.json';
+    a.click();
 
     window.location.reload();
 }

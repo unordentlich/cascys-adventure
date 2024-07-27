@@ -49,12 +49,14 @@ body {
 
     overflow-x: scroll;
     display: flex;
+    width: 100%;
 }
 
 .level-container {
     height: 100%;
     padding: 20px;
     min-width: 240px;
+    max-width: 240px;
     border-radius: 20px;
     background-color: #53515b;
     box-sizing: border-box;
