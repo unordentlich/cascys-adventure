@@ -182,6 +182,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById('btn-load-project').addEventListener('contextmenu', (event) => {
         showRecentsContextMenu(event.clientX, event.clientY);
+    });
+
+    document.getElementById('btn-export-project').addEventListener('click', () => {
+        exportProject();
     })
 
     document.getElementById('tool-collision').addEventListener('click', () => {
@@ -284,13 +288,18 @@ function loadProject(pJson) {
     document.getElementById('btn-save-or-create-project').innerText = 'Save Draft';
 }
 
-function prepareCanvas() {
+function prepareCanvas(exp = false) {
     ctx.restore();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();
     ctx.resetTransform();
-    ctx.scale(zoom, zoom);
-    ctx.translate(mouseOffsetX, mouseOffsetY);
+    if (!exp) {
+        ctx.scale(zoom, zoom);
+        ctx.translate(mouseOffsetX, mouseOffsetY);
+    } else {
+        ctx.scale(1, 1);
+        ctx.translate(0, 0);
+    }
     if (project.chunks.length === 0) return;
     if (project.chunks.length !== project.height * project.width) {
         alert('Warning! Map file is corrupted. Expected chunk amount: ' + project.height * project.width + ' -> Actual amount: ' + project.chunks.length);
@@ -313,21 +322,23 @@ function prepareCanvas() {
 
         var sprite = selectSprite(chunk.tile.map, chunk.tile.x, chunk.tile.y);
         ctx.drawImage(getImage(sprite, chunk.rotation), xPos, yPos, project.pixelSize, project.pixelSize);
-        ctx.strokeRect(xPos, yPos, project.pixelSize, project.pixelSize);
+        if (!exp) {
+            ctx.strokeRect(xPos, yPos, project.pixelSize, project.pixelSize);
 
-        if (selectedChunk.filter(c => c.id === i).length) {
-            ctx.lineWidth = 5.5;
-            ctx.fillStyle = "white"
-            ctx.strokeStyle = "white";
-            ctx.strokeRect(xPos + 3, yPos + 3, project.pixelSize - 5.5, project.pixelSize - 5.5);
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = "black";
+            if (selectedChunk.filter(c => c.id === i).length) {
+                ctx.lineWidth = 5.5;
+                ctx.fillStyle = "white"
+                ctx.strokeStyle = "white";
+                ctx.strokeRect(xPos + 3, yPos + 3, project.pixelSize - 5.5, project.pixelSize - 5.5);
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = "black";
+            }
+
+            if (altPressed) ctx.fillText(i, xPos + project.pixelSize / 2 - 10, yPos + project.pixelSize / 2);
+
+            ctx.stroke();
+            ctx.fillStyle = "black";
         }
-
-        if (altPressed) ctx.fillText(i, xPos + project.pixelSize / 2 - 10, yPos + project.pixelSize / 2);
-
-        ctx.stroke();
-        ctx.fillStyle = "black";
 
         xPos += project.pixelSize;
     }
@@ -686,7 +697,7 @@ function createProject() {
     project.height = parseInt(height);
     project.width = parseInt(width);
     project.pixelSize = parseInt(pixel);
-    if(!project.metadata) project.metadata = {};
+    if (!project.metadata) project.metadata = {};
     project.metadata.name = title;
     project.metadata.translationKey = translationKey;
 
@@ -730,7 +741,7 @@ function bookChange(undo, redo) {
     var changeObject = {
         undo: undo,
     };
-    if(redo) {
+    if (redo) {
         changeObject.redo = redo;
     }
     lastChanges.unshift(changeObject);

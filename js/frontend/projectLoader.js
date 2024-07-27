@@ -13,12 +13,12 @@ function saveDraftToFile() {
         chunks: project.chunks,
         collisions: project.collisions
     };
-    if(project.metadata.translationKey) f.metadata.translationKey = project.metadata.translationKey;
+    if (project.metadata.translationKey) f.metadata.translationKey = project.metadata.translationKey;
 
     window.electronAPI.requestLocationSave(JSON.stringify(f, null, 2)).then(async (result) => {
         setTimeout(() => {
             console.log(result);
-            if(!result.success) {
+            if (!result.success) {
                 alert('Something went wrong! Please try it again!')
             }
         }, 500);
@@ -80,9 +80,25 @@ function showRecentsContextMenu(x, y) {
 }
 
 const contextListener = (event) => {
-    console.log('ring ring bananaphone');
-    if(event.target.id !== 'context') {
+    if (event.target.id !== 'context') {
         document.getElementById('context').style.display = 'none';
         document.removeEventListener('click', contextListener);
     }
+}
+
+function exportProject() {
+    canvas.width = project.width * project.pixelSize;
+    canvas.height = project.height * project.pixelSize;
+    window.scrollTo({
+        top: document.body.scrollHeight
+    });
+
+    console.log(canvas.width, canvas.height);
+    prepareCanvas(true);
+    var a = document.createElement("a");
+    a.href = canvas.toDataURL();
+    a.download = "Image.png";
+    a.click();
+
+    window.location.reload();
 }
