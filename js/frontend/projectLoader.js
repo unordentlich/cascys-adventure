@@ -4,7 +4,7 @@ function saveDraftToFile() {
         width: project.width,
         pixelSize: project.pixelSize,
         metadata: {
-            name: project.name,
+            name: project.metadata.name,
             draft: true,
             created: Date.now(),
             lastUpdated: Date.now(),
@@ -13,7 +13,7 @@ function saveDraftToFile() {
         chunks: project.chunks,
         collisions: project.collisions
     };
-    if(project.translationKey) f.metadata.translationKey = project.translationKey;
+    if(project.metadata.translationKey) f.metadata.translationKey = project.metadata.translationKey;
 
     window.electronAPI.requestLocationSave(JSON.stringify(f, null, 2)).then(async (result) => {
         setTimeout(() => {

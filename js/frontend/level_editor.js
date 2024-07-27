@@ -35,6 +35,7 @@ let collisionDraft;
 let images = new Map();
 
 let lastChanges = [];
+let lastUndo = {};
 
 window.addEventListener("resize", () => {
     canvas.width = canvas.parentElement.getBoundingClientRect().width;
@@ -280,6 +281,7 @@ function loadProject(pJson) {
 
     prepareCanvas();
     displayProjectTitle();
+    document.getElementById('btn-save-or-create-project').innerText = 'Save Draft';
 }
 
 function prepareCanvas() {
@@ -387,7 +389,17 @@ function changeChunkTile(tile) {
 
     prepareCanvas();
     innerChunkPropertiesInFields();
-    bookChange('change-chunk-tile', selectedChunk, changesList);
+
+    var undoChunks = structuredClone(selectedChunk);
+    bookChange(() => {
+        for (let i = 0; i < undoChunks.length; i++) {
+            let chunk = project.chunks.filter(c => c.id === undoChunks[i].id)[0];
+            let tile = changesList[i];
+            chunk.tile = tile;
+        }
+        prepareCanvas();
+        innerChunkPropertiesInFields();
+    });
 }
 
 function selectTileImage(metadata) {
@@ -674,8 +686,9 @@ function createProject() {
     project.height = parseInt(height);
     project.width = parseInt(width);
     project.pixelSize = parseInt(pixel);
-    project.name = title;
-    project.translationKey = translationKey;
+    if(!project.metadata) project.metadata = {};
+    project.metadata.name = title;
+    project.metadata.translationKey = translationKey;
 
     let x = 0, y = 0;
     for (let i = 0; i < project.width * project.height; i++) {
@@ -698,41 +711,35 @@ function createProject() {
     hideProjectPopup();
     displayProjectTitle();
     prepareCanvas();
+    document.getElementById('btn-save-or-create-project').innerText = 'Save Draft';
 }
 
 function displayProjectTitle() {
-    if (!project.name) return;
+    if (!project.metadata.name) return;
 
-    document.getElementById('titlebar-project-title').innerText = '• ' + project.name;
+    document.getElementById('titlebar-project-title').innerText = '• ' + project.metadata.name;
     window.electronAPI.updateDiscordRPC({
         title: 'Level Creator',
         sub: `Working on a project`,
         smallImageKey: `project-icon`,
-        smallImageText: project.name
+        smallImageText: project.metadata.name
     })
 }
 
-function bookChange(change, field, oldValue) {
-    if (lastChanges.length >= 50) {
-        lastChanges.pop();
+function bookChange(undo, redo) {
+    var changeObject = {
+        undo: undo,
+    };
+    if(redo) {
+        changeObject.redo = redo;
     }
-
-    lastChanges.unshift({
-        change: change,
-        field: field,
-        value: oldValue
-    });
+    lastChanges.unshift(changeObject);
 }
 
 function undo() {
     let change = lastChanges.shift();
 
-    if (change.change === 'change-chunk-tile') {
-        for (let i = 0; i < change.field.length; i++) {
-            selectedChunk = [change.field[i]];
-            changeChunkTile(change.value[i]);
-        }
-    }
+    change.undo();
 }
 
 const defaultTile = {
