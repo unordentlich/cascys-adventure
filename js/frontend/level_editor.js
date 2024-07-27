@@ -169,9 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById('btn-save-or-create-project').addEventListener('click', () => {
         if (project.chunks.length > 0) {
-            window.electronAPI.requestPath().then((path) => {
-                saveDraftToFile(path);
-            });
+            saveDraftToFile();
         } else {
             createProjectPopup();
         }

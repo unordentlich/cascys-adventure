@@ -1,4 +1,4 @@
-function saveDraftToFile(path) {
+function saveDraftToFile() {
     const f = {
         height: project.height,
         width: project.width,
@@ -15,7 +15,14 @@ function saveDraftToFile(path) {
     };
     if(project.translationKey) f.metadata.translationKey = project.translationKey;
 
-    window.electronAPI.saveGlobalFile(path[0] + '/cca-project.json', JSON.stringify(f, null, 2));
+    window.electronAPI.requestLocationSave(JSON.stringify(f, null, 2)).then(async (result) => {
+        setTimeout(() => {
+            console.log(result);
+            if(!result.success) {
+                alert('Something went wrong! Please try it again!')
+            }
+        }, 500);
+    });
 }
 
 function requestDraftFromFile() {
@@ -59,14 +66,23 @@ function showRecentsContextMenu(x, y) {
         let li = document.createElement('li');
         li.addEventListener('click', () => {
             loadDraftFromFile(recentProjects[i]);
+            document.getElementById('context').style.display = 'none';
+            document.removeEventListener('click', contextListener);
         });
         li.innerText = recentProjects[i].split('/').slice(-1)[0];
         contextUl.appendChild(li);
     }
 
-
-    console.log(contextUl.getBoundingClientRect().width, contextUl.getBoundingClientRect().height);
+    contextMenu.style.display = 'block';
     contextMenu.style.left = x - contextUl.getBoundingClientRect().width + 'px';
     contextMenu.style.top = y - contextUl.getBoundingClientRect().height - 40 + 'px';
-    contextMenu.style.display = 'block';
+    document.addEventListener('click', contextListener);
+}
+
+const contextListener = (event) => {
+    console.log('ring ring bananaphone');
+    if(event.target.id !== 'context') {
+        document.getElementById('context').style.display = 'none';
+        document.removeEventListener('click', contextListener);
+    }
 }

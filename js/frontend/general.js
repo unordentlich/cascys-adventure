@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let buttons = document.getElementsByTagName('button');
     for(let i=0; i < buttons.length; i++) {
         buttons[i].addEventListener('mouseover', () => {
-            if(soundLock) return;
+            if(soundLock || !getSetting('audio.button_sounds', false)) return;
             playSoundEffect('button_hover');
             soundLock = true;
         });
@@ -147,7 +147,6 @@ function loadSettingsFromFile() {
 function getSetting(key, fallback) {
     const keys = key.split('.');
     let current = settings;
-    console.log(settings);
 
     for (let i = 0; i < keys.length - 1; i++) {
         if (!current[keys[i]]) {

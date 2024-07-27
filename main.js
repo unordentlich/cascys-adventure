@@ -38,8 +38,8 @@ const showIntro = async () => {
         return { action: "deny" };
     });
 
-    win.loadFile("views/logo.html"); 
-    //win.loadFile("views/main_menu.html");DEACTIVATED FOR DEBUG ONLY
+    //win.loadFile("views/logo.html"); DEACTIVATED FOR DEBUG ONLY
+    win.loadFile("views/main_menu.html");
 
     ipcMain.on('toggle-fullscreen', (event, mode) => {
         win.setFullScreen(mode);
@@ -99,12 +99,21 @@ app.whenReady().then(async () => {
     ipcMain.on('save-file', saveFile);
     ipcMain.on('save-global-file', saveGlobalFile);
 
-    ipcMain.handle('request-path', async (event) => {
-        var path = await dialog.showOpenDialog({
+    ipcMain.handle('request-location-to-save', async (event, content) => {
+        const path = await dialog.showSaveDialog({
             defaultPath: app.getPath('userData'),
-            properties: ['openDirectory']
+            filters: [
+                { name: "JSON File", extensions: ["json"] }
+            ]
         });
-        return path.filePaths;
+
+        if (path.canceled === true) return { success: false };
+        var filePath = path.filePath;
+
+        fs.promises.writeFile(filePath, content, { encoding: 'utf8', flag: 'w' });
+
+
+        return { success: true };
     });
 
     ipcMain.handle('request-file', async (event) => {
@@ -125,7 +134,7 @@ app.whenReady().then(async () => {
     });
 
     ipcMain.handle('load-global-file', async (event, path) => {
-        var file = await(loadFile(event, path, true));
+        var file = await (loadFile(event, path, true));
         return {
             path: path,
             content: file
@@ -133,8 +142,8 @@ app.whenReady().then(async () => {
     });
 
     ipcMain.on('settings-live-update', async (event, setting, newValue) => {
-        if(setting === 'general.discord_rpc') {
-            if(newValue) {
+        if (setting === 'general.discord_rpc') {
+            if (newValue) {
                 discordRPC = loginDiscordRPC();
             } else {
                 disconnect();
