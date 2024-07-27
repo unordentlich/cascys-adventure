@@ -93,12 +93,18 @@ function exportProject() {
         top: document.body.scrollHeight
     });
 
-    console.log(canvas.width, canvas.height);
     prepareCanvas(true);
     var a = document.createElement("a");
     a.href = canvas.toDataURL();
     a.download = "Image.png";
     a.click();
+
+    const f = {
+        name: project.metadata.name,
+        translation: project.metadata.translationKey,
+        creation: Date.now(),
+        collisions: project.collisions
+    }
 
     window.location.reload();
 }

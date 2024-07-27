@@ -5,6 +5,7 @@ const path = require('node:path')
 const fs = require('fs');
 const { loginDiscordRPC, updateDiscordRPC, disconnect } = require("./js/logic/discordRPC.js");
 const { getSetting, loadFile, preCacheFiles, saveFile } = require("./dataController.js");
+const { loadLevels } = require("./js/logic/levelManager.js");
 
 const GAME_NAME = "Cascy's Coding Adventure";
 
@@ -83,6 +84,7 @@ function saveGlobalFile(event, p, file) {
 
 app.whenReady().then(async () => {
     await preCacheFiles();
+    loadLevels();
     await showIntro();
     win.webContents.openDevTools();
 

@@ -8,6 +8,7 @@ body {
 
 .body {
     display: flex;
+    position: relative;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -20,7 +21,7 @@ body {
 
 .title-section h3 {
     text-align: center;
-    font-size: 80px;
+    font-size: 70px;
     margin: 0;
 }
 
@@ -243,6 +244,29 @@ h5 {
 #leave-confirmation-popup p {
     margin-top: 2px;
     color: rgba(255, 255, 255, 0.667);
+}
+
+.decoration-front {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    pointer-events: none;
+    height: 100vh;
+    display: flex;
+    width: 100%;
+}
+
+.decoration-front .tree-left {
+    margin-left: -48px;
+    height: 100%;
+}
+
+.decoration-front .tree-right {
+    margin-left: auto;
+    transform: scale(-1, 1);
+    margin-right: -48px;
+    height: 100%;
 }
 
 @keyframes shake {
