@@ -26,11 +26,18 @@ document.addEventListener('DOMContentLoaded', () => {
         levelP.innerText = 'Level ' + i;
         
         let nameH = document.createElement('h5');
-        nameH.innerText = 'test';
+        nameH.innerText = levels[i].name;
 
         informationChild.appendChild(levelP);
         informationChild.appendChild(nameH);
         child.append(informationChild);
+
+        child.onclick = () => {
+            if(i > currentLevel) return;
+            sessionStorage.setItem('level-load', levels[i].file);
+            window.electronAPI.switchPage('views/level.html');
+        }
+
         levelCarousel.appendChild(child);
     }
 })

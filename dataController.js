@@ -41,8 +41,18 @@ async function preCacheFiles() {
 async function loadFile(event, p, fromRoot) {
     if (cachedFiles.has(p)) return cachedFiles.get(p);
     const filePath = path.join(app.getPath('userData'), p);
-    let file = await fs.promises.readFile((fromRoot ? p : filePath), 'utf-8');
-    return file;
+    
+    try {
+        var file = await fs.promises.readFile((fromRoot ? p : filePath), 'utf-8');
+        return file;
+    } catch (err) {
+        console.error(err);
+        return;
+    }
+}
+
+function loadPath(p) {
+    return path.join(app.getPath('userData'), p);
 }
 
 
@@ -56,3 +66,4 @@ exports.getSetting = getSetting;
 exports.preCacheFiles = preCacheFiles;
 exports.loadFile = loadFile;
 exports.saveFile = saveFile;
+exports.loadPath = loadPath;

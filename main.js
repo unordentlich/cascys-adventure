@@ -4,7 +4,7 @@ const { BrowserWindow, app, ipcMain, dialog } = require("electron")
 const path = require('node:path')
 const fs = require('fs');
 const { loginDiscordRPC, updateDiscordRPC, disconnect } = require("./js/logic/discordRPC.js");
-const { getSetting, loadFile, preCacheFiles, saveFile } = require("./dataController.js");
+const { getSetting, loadFile, preCacheFiles, saveFile, loadPath } = require("./dataController.js");
 const { loadLevels } = require("./js/logic/levelManager.js");
 
 const GAME_NAME = "Cascy's Coding Adventure";
@@ -39,7 +39,7 @@ const showIntro = async () => {
         return { action: "deny" };
     });
 
-    win.loadFile("views/intro.html"); 
+    win.loadFile("views/intro.html");
     //win.loadFile("views/main_menu.html"); DEACTIVATED FOR DEBUG ONLY
 
     ipcMain.on('toggle-fullscreen', (event, mode) => {
@@ -155,7 +155,11 @@ app.whenReady().then(async () => {
 
     ipcMain.on('discord-rpc-update', async (event, data) => {
         updateDiscordRPC(data);
-    })
+    });
+
+    ipcMain.handle('load-path', (event, path) => {
+        return loadPath(path);
+    });
 });
 
 try {
