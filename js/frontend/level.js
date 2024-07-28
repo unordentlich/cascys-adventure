@@ -22,6 +22,9 @@ function loadLevel() {
 
         map.appendChild(img);
 
+        document.querySelector("p[data-id='level-number']").innerText = 'Level 0';
+        document.querySelector("p[data-id='level']").innerText = level.name;
+
         document.querySelector('.loading-screen').style.display = 'none';
     });
 }

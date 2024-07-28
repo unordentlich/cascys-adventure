@@ -1,5 +1,24 @@
 body {
     overflow: hidden;
+    height: 100%;
+}
+
+.body {
+    height: 100%;
+}
+
+#titlebar {
+    position: fixed;
+}
+
+.vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 263px rgb(52 52 52 / 90%) inset;
+    z-index: 99;
 }
 
 .loading-screen {
@@ -28,4 +47,29 @@ body {
 
 .loading-screen p {
     margin-bottom: 10px;
+}
+
+.ui {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 20px 40px;
+    font-size: 20px;
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+.ui p[data-id='level-number'] {
+    margin-bottom: -15px;
+}
+
+.ui p[data-id='level'] {
+    color: #ffffff70;
+}
+
+#map img {
+    transform-origin: left top;
+    transform: scale(0.6);
 }

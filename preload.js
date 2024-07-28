@@ -18,4 +18,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateDiscordRPC: (data) => ipcRenderer.send('discord-rpc-update', data),
   retrieveLevelList: async (extended) => ipcRenderer.invoke('level-list', extended),
   startLevel: async (file) => ipcRenderer.invoke('level-start', file),
+  openFolder: (path) => ipcRenderer.send('open-folder', path),
 })

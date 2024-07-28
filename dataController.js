@@ -1,6 +1,6 @@
 const path = require('node:path')
 const fs = require('fs');
-const { app } = require('electron');
+const { app, ipcMain, shell } = require('electron');
 
 const filesRequireCaching = ['settings.json'];
 const cachedFiles = new Map();
@@ -61,6 +61,11 @@ function saveFile(event, p, file) {
     const filePath = path.join(app.getPath('userData'), p);
     fs.writeFileSync(filePath, file);
 }
+
+ipcMain.on('open-folder', (event, p) => {
+    let fullPart = path.join(app.getPath('userData'), p);
+    shell.openPath(fullPart);
+});
 
 exports.getSetting = getSetting;
 exports.preCacheFiles = preCacheFiles;
