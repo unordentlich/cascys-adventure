@@ -256,6 +256,8 @@ h5 {
     pointer-events: none;
     height: 100vh;
     display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
     width: 100%;
 }
 
@@ -265,10 +267,13 @@ h5 {
 }
 
 .decoration-front .tree-right {
-    margin-left: auto;
     transform: scale(-1, 1);
     margin-right: -48px;
     height: 100%;
+}
+
+.bush {
+    height: 150px;
 }
 
 @keyframes shake {
