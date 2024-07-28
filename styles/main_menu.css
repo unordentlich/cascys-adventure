@@ -272,8 +272,14 @@ h5 {
     height: 100%;
 }
 
-.bush {
-    height: 150px;
+.decoration-front .bush {
+    height: 28%;
+}
+
+.bush-two {
+    height: 25%;
+    transform: scale(-1, 1);
+    filter: saturate(1.2);
 }
 
 @keyframes shake {

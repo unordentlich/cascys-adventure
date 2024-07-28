@@ -19,7 +19,7 @@ const showIntro = async () => {
     win = new BrowserWindow({
         minHeight: 700,
         minWidth: 1200,
-        icon: 'assets/characters/cascy/default.png',
+        icon: 'assets/characters/cascy/max-width.png',
         title: GAME_NAME,
         titleBarStyle: 'hidden',
         titleBarOverlay: {
