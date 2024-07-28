@@ -17,6 +17,16 @@ const sprites = [
             "Grass with Flowers",
             "Straight Water Border"
         ]
+    },
+    {
+        id: "spritesheet",
+        tiles: 1,
+        pixelPerTile: 200,
+        width: 1,
+        heigth: 1,
+        titles: [
+            "Player"
+        ]
     }
 ];
 
