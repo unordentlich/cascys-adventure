@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         var borderReached = checkBorders(direction);
 
-        console.log(`x: ${x}, y: ${y}`);
         if (!borderReached) {
             if(e.key === 'w' || e.key === 'ArrowUp') y -= stepSize;
             if(e.key === 'a' || e.key === 'ArrowLeft') x -= stepSize;
@@ -77,8 +76,19 @@ function checkBorders(direction) {
 
     const MapToPlayerStepFactor = map.width / viewArea.width;
 
-    if (playerLoc.x < viewArea.width / 2) return false; // The screen should only move if the player is in the middle of the screen
-    if (nearInt(map.x * -1 + viewArea.width, map.width, 5)) return false; // The screen should only move if the map is not at the end
+    if(direction === 1) {
+        if(playerLoc.x < viewArea.width / 2) return false;
+        if (nearInt((map.x + stepSize) * -1 + viewArea.width, map.width, 5) || map.x - stepSize > 0) return false; // The screen should only move if the map is not at the end
+    } else if(direction === -1) {
+        if(playerLoc.x > viewArea.width / 2) return false;
+        console.log(nearInt((map.x - stepSize * 3) * -1 + viewArea.width, map.width, 5) || map.x + stepSize > 0);
+        if (nearInt((map.x - stepSize * 3) * -1 + viewArea.width, map.width, 5) || map.x + stepSize > 0) return false; // The screen should only move if the map is not at the end
+    }
+    /**if (direction === 1 && playerLoc.x < viewArea.width / 2) return false; // The screen should only move if the player is in the middle of the screen
+    if (direction === -1 && playerLoc.x > viewArea.width / 2) return false; // The screen should only move if the player is in the middle of the screen
+    console.log(`map.x: ${map.x}, viewArea.width: ${viewArea.width}`, nearInt((map.x + stepSize) * -1 + viewArea.width, map.width, 5), map.x > 0);
+    if (nearInt((map.x + stepSize) * -1 + viewArea.width, map.width, 5) || map.x - stepSize > 0) return false; // The screen should only move if the map is not at the end
+    **/
 
     //move the map in the same direction with the same speed as the player
     if (direction === 1) {
