@@ -1,5 +1,5 @@
 var level = {};
-var x = 0, y = 0, stepSize = 7, viewBorder = 50;
+var x = 0, y = 0, stepSize = 7, viewBorder = 0;
 var mapX = 0, mapY = 0;
 let player;
 
@@ -14,21 +14,25 @@ document.addEventListener('DOMContentLoaded', () => {
         var direction = 0;
         if (e.key === 'w' || e.key === 'ArrowUp') {
             direction = 1;
+            if (checkBorder(0, -1)) return;
         } else if (e.key === 's' || e.key === 'ArrowDown') {
             direction = -1;
+            if (checkBorder(0, 1)) return;
         } else if (e.key === 'd' || e.key === 'ArrowRight') {
             direction = 1;
+            if (checkBorder(1, 0)) return;
         } else if (e.key === 'a' || e.key === 'ArrowLeft') {
             direction = -1;
+            if (checkBorder(-1, 0)) return;
         }
 
-        var borderReached = checkBorders(direction);
+        var borderReached = checkMapMovement(direction);
 
         if (!borderReached) {
-            if(e.key === 'w' || e.key === 'ArrowUp') y -= stepSize;
-            if(e.key === 'a' || e.key === 'ArrowLeft') x -= stepSize;
-            if(e.key === 's' || e.key === 'ArrowDown') y += stepSize;
-            if(e.key === 'd' || e.key === 'ArrowRight') x += stepSize;
+            if (e.key === 'w' || e.key === 'ArrowUp') y -= stepSize;
+            if (e.key === 'a' || e.key === 'ArrowLeft') x -= stepSize;
+            if (e.key === 's' || e.key === 'ArrowDown') y += stepSize;
+            if (e.key === 'd' || e.key === 'ArrowRight') x += stepSize;
 
             player.style.transform = `translate(${x}px, ${y}px)`;
             player.style.transition = 'transform 0.2s linear';
@@ -69,26 +73,20 @@ function loadLevel() {
     });
 }
 
-function checkBorders(direction) {
+function checkMapMovement(direction) {
     var playerLoc = player.getBoundingClientRect();
     var viewArea = document.getElementById('map').getBoundingClientRect();
     var map = document.getElementById('map-bg').getBoundingClientRect();
 
     const MapToPlayerStepFactor = map.width / viewArea.width;
 
-    if(direction === 1) {
-        if(playerLoc.x < viewArea.width / 2) return false;
+    if (direction === 1) {
+        if (playerLoc.x < viewArea.width / 2) return false;
         if (nearInt((map.x + stepSize) * -1 + viewArea.width, map.width, 5) || map.x - stepSize > 0) return false; // The screen should only move if the map is not at the end
-    } else if(direction === -1) {
-        if(playerLoc.x > viewArea.width / 2) return false;
-        console.log(nearInt((map.x - stepSize * 3) * -1 + viewArea.width, map.width, 5) || map.x + stepSize > 0);
-        if (nearInt((map.x - stepSize * 3) * -1 + viewArea.width, map.width, 5) || map.x + stepSize > 0) return false; // The screen should only move if the map is not at the end
+    } else if (direction === -1) {
+        if (playerLoc.x > viewArea.width / 2) return false;
+        if (map.x + stepSize > 0) return false; // The screen should only move if the map is not at the end
     }
-    /**if (direction === 1 && playerLoc.x < viewArea.width / 2) return false; // The screen should only move if the player is in the middle of the screen
-    if (direction === -1 && playerLoc.x > viewArea.width / 2) return false; // The screen should only move if the player is in the middle of the screen
-    console.log(`map.x: ${map.x}, viewArea.width: ${viewArea.width}`, nearInt((map.x + stepSize) * -1 + viewArea.width, map.width, 5), map.x > 0);
-    if (nearInt((map.x + stepSize) * -1 + viewArea.width, map.width, 5) || map.x - stepSize > 0) return false; // The screen should only move if the map is not at the end
-    **/
 
     //move the map in the same direction with the same speed as the player
     if (direction === 1) {
@@ -99,6 +97,19 @@ function checkBorders(direction) {
 
     document.getElementById('map-bg').style.transform = `translate(${mapX}px, ${mapY}px)`;
     return true;
+}
+
+function checkBorder(x = 0, y = 0) {
+    var playerLoc = player.getBoundingClientRect();
+    var viewArea = document.getElementById('map').getBoundingClientRect();
+
+    console.log(playerLoc.x, playerLoc.y);
+
+    if (x + x * stepSize < viewBorder || x + x * stepSize > viewArea.width - viewBorder) return true;
+    if (y + y * stepSize < viewBorder || y + y * stepSize > viewArea.height - viewBorder) return true;
+
+
+    return false;
 }
 
 function nearInt(op, target, range) {
