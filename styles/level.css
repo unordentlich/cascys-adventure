@@ -47,8 +47,8 @@ body {
     background-repeat: no-repeat;
     height: 100px;
     width: 100px;
-    left: 350px;
-    top: 350px;
+    /*left: 350px;
+    top: 350px;*/
     z-index: 80;
 }
 

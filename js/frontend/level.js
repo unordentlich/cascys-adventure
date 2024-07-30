@@ -1,5 +1,6 @@
 var level = {};
 var x = 0, y = 0, stepSize = 7, viewBorder = 50;
+var mapX = 0, mapY = 0;
 let player;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,21 +10,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const movementKeys = ['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'];
     document.addEventListener('keydown', (e) => {
         if (!movementKeys.includes(e.key)) return;
+
+        var direction = 0;
         if (e.key === 'w' || e.key === 'ArrowUp') {
             y -= stepSize;
+            direction = 1;
         } else if (e.key === 's' || e.key === 'ArrowDown') {
             y += stepSize;
+            direction = -1;
         } else if (e.key === 'd' || e.key === 'ArrowRight') {
             x += stepSize;
+            direction = 1;
         } else if (e.key === 'a' || e.key === 'ArrowLeft') {
             x -= stepSize;
+            direction = -1;
         }
 
         player.style.transform = `translate(${x}px, ${y}px)`;
         player.style.transition = 'transform 0.2s linear';
         player.setAttribute('state', 'moving');
 
-        checkBorders();
+        checkBorders(direction);
     });
 
     document.addEventListener('keyup', (e) => {
@@ -58,41 +65,22 @@ function loadLevel() {
     });
 }
 
-function checkBorders() {
-    var location = player.getBoundingClientRect();
+function checkBorders(direction) {
+    var playerLoc = player.getBoundingClientRect();
     var viewArea = document.getElementById('map').getBoundingClientRect();
     var map = document.getElementById('map-bg').getBoundingClientRect();
 
-    if (location.x < viewBorder) {
-        console.log('border hit');
-    } else if(location.x + location.width > viewArea.width - viewBorder) {
-        console.log('border right hit');
-        scroll(800, 0);
-    } else if (location.y < viewBorder) {
-        console.log('border hit');
-    } else if(location.y + location.height > viewArea.height - viewBorder) {
-        console.log('border hit');
-    }
+    scroll(direction);
 
-    function scroll(moveX, moveY) {
-
-        //todo possible approaches:
-        // 1. move the player as fast as the map (player to the other end (0 + border & width - border))
-        // 2. Move the map with every key press a little bit (player stays in the middle) <- try this one tmrw
+    function scroll(direction = 0) {
         var m = document.getElementById('map-bg');
-        var currentTransformX = map.left;
-        var currentTransformY = map.top;
-        console.log('Current Map:', currentTransformX, currentTransformY);
+        const mapToPlayerRatio = map.width / viewArea.width;
 
-        console.log('Current Player:', x, y);
-        x -= moveX;
-        y -= moveY;
-        console.log('New Player:', x, y);
-        player.style.transform = `translate(${x}px, ${y}px)`;
-        player.style.transition = 'transform 0.2s linear';
+        mapX += (direction === 1 ? stepSize : -stepSize) * mapToPlayerRatio;
+        mapY += stepSize * 2; // do same for height
+        console.log(mapX);
 
-        console.log('New Map:', currentTransformX - moveX, currentTransformY - moveY);
-        m.style.transform = `translate(${currentTransformX - moveX}px, ${currentTransformY - moveY}px)`;
+        m.style.transform = `translate(-${mapX}px, -${0}px)`;
         m.style.transition = 'transform 0.2s linear';
     }
 }
